@@ -3,6 +3,7 @@ from .utils import ConfusionMatrix, load_data, VehicleClassificationDataset
 import torch
 import torchvision
 import torch.utils.tensorboard as tb
+from datetime import datetime
 
 
 def train(args):
@@ -23,7 +24,9 @@ def train(args):
     valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     N = len(train_data)
-    for iter in range(5):
+    best_vloss = 100000
+
+    for epoch in range(50):
         model.train()
 
         val = 0
@@ -43,12 +46,9 @@ def train(args):
 
             # Adjust weights
             optimizer.step()
-
-            print("Progress!")
-
             # Retrieve loss
             val += t_loss.item()
-            train_logger.add_scalar('train', val, i + N * iter)
+            train_logger.add_scalar('train', val, i + N * epoch)
 
         model.eval()
 
@@ -65,11 +65,14 @@ def train(args):
             valid_loss += t_loss.item()
 
         valid_loss /= len(valid_data)
-        valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * iter)
+        valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
 
-
-        print("Progress222!")
-    
+        if valid_loss < best_vloss:
+            best_vloss = valid_loss
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            model_path = 'model_{}_{}'.format(timestamp, epoch)
+            torch.save(model.state_dict(), model_path)
+        
 
 if __name__ == '__main__':
     import argparse
