@@ -2,7 +2,7 @@ import torch
 
 import torch.nn as nn
 import torch.nn.functional as F
-
+from torchvision.models import resnet50
 
 class CNNClassifier(torch.nn.Module):
     def __init__(self):
@@ -10,13 +10,22 @@ class CNNClassifier(torch.nn.Module):
         """
         Your code here
         """
-        raise NotImplementedError('CNNClassifier.__init__') 
+        self.resnet = resnet50(pretrained=True)
+        self.resnet.fc = nn.Linear(in_features=2048, out_features=1024, bias=True)
+        self.act1 = nn.ReLU()
+        self.fcn2 = nn.Linear(in_features=1024, out_features=6, bias=True)
+        # self.pred_score = nn.Softmax(6)
 
     def forward(self, x):
         """
         Your code here
         """
-        raise NotImplementedError('CNNClassifier.forward') 
+        x = self.resnet(x)
+        x = self.act1(x)
+        x = self.fcn2(x)
+        # x = self.pred_score(x)
+    
+        return x
 
 
 class FCN_ST(torch.nn.Module):
@@ -76,15 +85,16 @@ class SoftmaxCrossEntropyLoss(nn.Module):
         super(SoftmaxCrossEntropyLoss, self).__init__()
 
     def forward(self, inputs, targets):
-
-        """
-        Your code here
-        Hint: inputs (prediction scores), targets (ground-truth labels)
-        Hint: Implement a Softmax-CrossEntropy loss for classification
-        Hint: return loss, F.cross_entropy(inputs, targets)
-        """
-        raise NotImplementedError('SoftmaxCrossEntropyLoss.__init__')
-
+        print(inputs.shape)
+        print(targets.shape)
+        # outputs.requires_grad = True
+        outputs = -1 * torch.log(torch.true_divide(torch.exp(inputs).T , torch.sum(torch.exp(inputs), dim=1)).T)
+        loglik = torch.empty(targets.shape, requires_grad=False, dtype=torch.float32)
+        for i, val in enumerate(targets):
+            loglik[i] = outputs[i, val]
+        # loglik = torch.gather(loglik.T, 0, targets[])
+        # outputs = torch.sum(outputs * targets)
+        return loglik.mean()
 
 model_factory = {
     'cnn': CNNClassifier,

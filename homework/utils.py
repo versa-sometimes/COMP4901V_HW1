@@ -11,6 +11,7 @@ from torchvision.transforms import functional as F
 
 from . import dense_transforms
 
+dataset_path = './drive-download-20230329T090612Z-001/train_subset'
 
 class VehicleClassificationDataset(Dataset):
     def __init__(self, dataset_path):
@@ -19,17 +20,37 @@ class VehicleClassificationDataset(Dataset):
         Hint: load your data from provided dataset (VehicleClassificationDataset) to train your designed model
         """
         # e.g., Bicycle 0, Car 1, Taxi 2, Bus 3, Truck 4, Van 5
+        self.dataset_path = dataset_path
         self.data = []
         self.label = []
 
-        raise NotImplementedError('VehicleClassificationDataset.__init__')
-         
+        # for type in os.listdir('./'+dataset_path+'/train_subset'):
+        #     for file in os.listdir('./'+dataset_path+'/train_subset'+type):
+        tf = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
+        i = 0
+        for path in glob(dataset_path+'/*'):
+            for img in glob(path+'/*'):
+                # i += 1
+
+                # if i >= 128:
+                #     break
+                print(img)
+                self.data.append(tf(Image.open(img)))
+                if path[-3:] == "cle":
+                    self.label.append(0)
+                elif path[-3:] == "Car":
+                    self.label.append(1)
+                elif path[-3:] == "axi":
+                    self.label.append(2)
+                elif path[-3:] == "Bus":
+                    self.label.append(3)
+                elif path[-3:] == "uck":
+                    self.label.append(4)
+                elif path[-3:] == "Van":
+                    self.label.append(5)
 
     def __len__(self):
-        """
-        Your code here
-        """
-        raise NotImplementedError('VehicleClassificationDataset.__len__')
+        return len(self.data)
 
     def __getitem__(self, idx):
         """
@@ -37,7 +58,7 @@ class VehicleClassificationDataset(Dataset):
         Hint: generate samples for training
         Hint: return image, and its image-level class label
         """
-        raise NotImplementedError('VehicleClassificationDataset.__getitem__')
+        return self.data[idx], self.label[idx]
 
 
 class DenseCityscapesDataset(Dataset):
