@@ -85,8 +85,6 @@ class SoftmaxCrossEntropyLoss(nn.Module):
         super(SoftmaxCrossEntropyLoss, self).__init__()
 
     def forward(self, inputs, targets):
-        print(inputs.shape)
-        print(targets.shape)
         # outputs.requires_grad = True
         outputs = -1 * torch.log(torch.true_divide(torch.exp(inputs).T , torch.sum(torch.exp(inputs), dim=1)).T)
         loglik = torch.empty(targets.shape, requires_grad=False, dtype=torch.float32)

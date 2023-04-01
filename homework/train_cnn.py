@@ -22,6 +22,14 @@ def train(args):
     loss = SoftmaxCrossEntropyLoss()
     train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size)
     valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size)
+
+
+    if torch.cuda.is_available():
+        device = torch.device("cuda")    # select GPU device
+        model = model.to(device)         # move model to GPU memory
+        train_data = train_data.to(device)           # move data to GPU memory
+        valid_data = valid_data.to(device)
+
     print("All data loaded.")
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     N = len(train_data)
