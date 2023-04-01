@@ -57,8 +57,9 @@ def train(args):
             optimizer.step()
             # Retrieve loss
             val += t_loss.item()
-            train_logger.add_scalar('train', val, i + N * epoch)
+            train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
 
+        val /= len(train_data)
         print('Epoch {}, training loss: {}'.format(epoch, val))
 
         model.eval()
