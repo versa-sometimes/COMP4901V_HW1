@@ -12,8 +12,12 @@ class CNNClassifier(torch.nn.Module):
         """
         self.resnet = resnet50(pretrained=True)
         self.resnet.fc = nn.Linear(in_features=2048, out_features=1024, bias=True)
-        self.act1 = nn.ReLU()
+        self.relu = nn.ReLU()
         self.fcn2 = nn.Linear(in_features=1024, out_features=6, bias=True)
+        
+        self.dropout = nn.Dropout(p=0.5)
+        
+        self.batch_norm = nn.BatchNorm1d(1024)
         # self.pred_score = nn.Softmax(6)
 
     def forward(self, x):
@@ -21,7 +25,9 @@ class CNNClassifier(torch.nn.Module):
         Your code here
         """
         x = self.resnet(x)
-        x = self.act1(x)
+        x = self.batch_norm(x)
+        x = self.relu(x)
+        x = self.dropout(x)
         x = self.fcn2(x)
         # x = self.pred_score(x)
     
@@ -92,6 +98,20 @@ class SoftmaxCrossEntropyLoss(nn.Module):
             loglik[i] = outputs[i, val]
         # loglik = torch.gather(loglik.T, 0, targets[])
         # outputs = torch.sum(outputs * targets)
+
+        # softmax = torch.exp(inputs) / torch.exp(inputs).sum(dim=1, keepdim=True)
+
+        # # Get probabilities of true classes
+        # true_class_probs = torch.gather(softmax, 1, targets.unsqueeze(1)).squeeze()
+
+        # # Calculate negative log probabilities of true classes
+        # neg_log_probs = -torch.log(true_class_probs)
+
+        # # Calculate mean loss over batch
+        # loss = neg_log_probs.mean()
+        # print("This1, ", loss)
+        # print("This2, ", loglik.mean())
+
         return loglik.mean()
 
 model_factory = {

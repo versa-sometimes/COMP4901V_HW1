@@ -29,7 +29,7 @@ def train(args):
         model = model.to(device)         # move model to GPU memory
 
     print("All data loaded.")
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
     N = len(train_data)
     best_vloss = 100000
 
@@ -41,7 +41,8 @@ def train(args):
         for i, data in enumerate(train_data):
             # load data and labels 
             inputs, labels = data
-            inputs, labels = inputs.to(device), labels.to(device)
+            if torch.cuda.is_available():
+                inputs, labels = inputs.to(device), labels.to(device)
 
             # zero the grads
             optimizer.zero_grad()
@@ -57,7 +58,9 @@ def train(args):
             optimizer.step()
             # Retrieve loss
             val += t_loss.item()
+            print(t_loss.item())
             train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
+            train_logger.flush()
 
         val /= len(train_data)
         print('Epoch {}, training loss: {}'.format(epoch, val))
@@ -68,7 +71,8 @@ def train(args):
         for i, data in enumerate(valid_data):
             # load data and labels 
             inputs, labels = data
-            inputs, labels = inputs.to(device), labels.to(device)
+            if torch.cuda.is_available():
+                inputs, labels = inputs.to(device), labels.to(device)
             # produce one set of outputs
             outputs = model(inputs)
 
@@ -76,9 +80,11 @@ def train(args):
             t_loss = loss(outputs, labels)
             # Retrieve loss
             valid_loss += t_loss.item()
+            print(t_loss.item())
 
         valid_loss /= len(valid_data)
         valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
+        valid_logger.flush()
         print('Epoch {}, validation loss: {}'.format(epoch, valid_loss))
 
         if valid_loss < best_vloss:

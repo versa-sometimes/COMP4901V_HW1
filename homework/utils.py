@@ -26,7 +26,14 @@ class VehicleClassificationDataset(Dataset):
 
         # for type in os.listdir('./'+dataset_path+'/train_subset'):
         #     for file in os.listdir('./'+dataset_path+'/train_subset'+type):
-        tf = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
+        tf = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomRotation(10),
+            transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
+            transforms.ToTensor(),
+        ])
         for path in glob(dataset_path+'/*'):
             for img in glob(path+'/*'):
                 self.data.append(tf(Image.open(img)))
