@@ -29,7 +29,7 @@ def test(args):
     for i, data in enumerate(train_data):
         inputs, labels = data
         # print(inputs.shape)
-        print(labels.shape)
+        # print(labels.shape)
         inputs, labels = inputs.to(device), labels.to(device)
         outputs = model(inputs)
         outputs = outputs.max(1)[0]
@@ -42,8 +42,8 @@ def test(args):
 
     for i, data in enumerate(valid_data):
         inputs, labels = data
-        print(labels.shape)
-        # inputs, labels = inputs.to(device), labels.to(device)
+        # print(labels.shape)
+        inputs, labels = inputs.to(device), labels.to(device)
         outputs = model(inputs)
         outputs = outputs.max(1)[0]
 
@@ -64,4 +64,5 @@ if __name__ == '__main__':
     # Put custom arguments here
 
     args = parser.parse_args()
-    test(args)
+    print(test(args))
+
