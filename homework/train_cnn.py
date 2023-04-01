@@ -24,9 +24,9 @@ def train(args):
     valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size)
 
 
-    if torch.cuda.is_available():
-        device = torch.device("cuda")    # select GPU device
-        model = model.to(device)         # move model to GPU memory
+    # if torch.cuda.is_available():
+    #     device = torch.device("cuda")    # select GPU device
+    #     model = model.to(device)         # move model to GPU memory
 
     print("All data loaded.")
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
