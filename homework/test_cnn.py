@@ -52,7 +52,7 @@ def test(args):
         valid_cm.add(outputs, labels)
     print("Clear all")
 
-    return train_cm.average_accuracy(), valid_cm.average_accuracy()
+    return train_cm.average_accuracy, valid_cm.average_accuracy
 
 
 if __name__ == '__main__':
