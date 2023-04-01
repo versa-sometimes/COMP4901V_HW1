@@ -27,8 +27,6 @@ def train(args):
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device
         model = model.to(device)         # move model to GPU memory
-        train_data = train_data.to(device)           # move data to GPU memory
-        valid_data = valid_data.to(device)
 
     print("All data loaded.")
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
