@@ -41,6 +41,7 @@ def train(args):
         for i, data in enumerate(train_data):
             # load data and labels 
             inputs, labels = data
+            inputs, labels = inputs.to(device), labels.to(device)
 
             # zero the grads
             optimizer.zero_grad()
@@ -65,7 +66,7 @@ def train(args):
         valid_loss = 0
         for i, data in enumerate(valid_data):
             # load data and labels 
-            inputs, labels = data
+            inputs, labels = inputs.to(device), labels.to(device)
             # produce one set of outputs
             outputs = model(inputs)
 
