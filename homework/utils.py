@@ -27,14 +27,8 @@ class VehicleClassificationDataset(Dataset):
         # for type in os.listdir('./'+dataset_path+'/train_subset'):
         #     for file in os.listdir('./'+dataset_path+'/train_subset'+type):
         tf = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
-        i = 0
         for path in glob(dataset_path+'/*'):
             for img in glob(path+'/*'):
-                # i += 1
-
-                # if i >= 128:
-                #     break
-                print(img)
                 self.data.append(tf(Image.open(img)))
                 if path[-3:] == "cle":
                     self.label.append(0)

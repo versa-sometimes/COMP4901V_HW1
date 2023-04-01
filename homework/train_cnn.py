@@ -50,6 +50,8 @@ def train(args):
             val += t_loss.item()
             train_logger.add_scalar('train', val, i + N * epoch)
 
+        print('Epoch {}, training loss: {}'.format(epoch, val))
+
         model.eval()
 
         valid_loss = 0
@@ -66,6 +68,7 @@ def train(args):
 
         valid_loss /= len(valid_data)
         valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
+        print('Epoch {}, validation loss: {}'.format(epoch, valid_loss))
 
         if valid_loss < best_vloss:
             best_vloss = valid_loss
