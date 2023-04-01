@@ -22,11 +22,13 @@ def train(args):
     loss = SoftmaxCrossEntropyLoss()
     train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size)
     valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size)
+    print("All data loaded.")
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     N = len(train_data)
     best_vloss = 100000
 
     for epoch in range(50):
+        print("Epoch {}".format(epoch))
         model.train()
 
         val = 0
