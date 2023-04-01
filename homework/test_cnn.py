@@ -10,7 +10,7 @@ def test(args):
     model = CNNClassifier()
     model.eval()
     batch_size = 64
-    model.load_state_dict(torch.load('./model_20230401_063051_10'))
+    model.load_state_dict(torch.load('./model_20230401_063051_10', torch.device('cpu')))
     train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size)
     valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size)
 
@@ -28,17 +28,29 @@ def test(args):
 
     for i, data in enumerate(train_data):
         inputs, labels = data
+        # print(inputs.shape)
+        print(labels.shape)
         inputs, labels = inputs.to(device), labels.to(device)
         outputs = model(inputs)
+        outputs = outputs.max(1)[0]
+
+
+        # print(outputs.shape)
 
         train_cm.add(outputs, labels)
+    print("Clear 1")
 
     for i, data in enumerate(valid_data):
         inputs, labels = data
-        inputs, labels = inputs.to(device), labels.to(device)
+        print(labels.shape)
+        # inputs, labels = inputs.to(device), labels.to(device)
         outputs = model(inputs)
+        outputs = outputs.max(1)[0]
+
+        # print(outputs.shape)
 
         valid_cm.add(outputs, labels)
+    print("Clear all")
 
     return train_cm.average_accuracy(), valid_cm.average_accuracy()
 
