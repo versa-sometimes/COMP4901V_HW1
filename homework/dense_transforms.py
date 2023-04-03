@@ -47,6 +47,17 @@ class RandomHorizontalFlip(object):
             image = F.hflip(image)
             target = F.hflip(target)
         return image, target
+    
+class RandomHorizontalFlip3(object):
+    def __init__(self, flip_prob=0.5):
+        self.flip_prob = flip_prob
+
+    def __call__(self, image, target, target2):
+        if random.random() < self.flip_prob:
+            image = F.hflip(image)
+            target = F.hflip(target)
+            target2 = F.hflip(target2)
+        return image, target, target2
 
 
 class Normalize(T.Normalize):

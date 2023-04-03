@@ -2,6 +2,7 @@ from .models import CNNClassifier, save_model, SoftmaxCrossEntropyLoss
 from .utils import ConfusionMatrix, load_data, VehicleClassificationDataset
 import torch
 import torchvision
+import torchvision.transforms as transforms
 import torch.utils.tensorboard as tb
 from datetime import datetime
 
@@ -20,8 +21,25 @@ def train(args):
     """
     # train_logger = tb.SummaryWriter('cnn')
     loss = SoftmaxCrossEntropyLoss()
-    train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size)
-    valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size)
+
+    transform1 = transforms.Compose([
+        transforms.Resize((224, 224)),
+
+        transforms.RandomOrder([transforms.RandomHorizontalFlip(),
+                                transforms.RandomRotation(10),
+                                transforms.RandomResizedCrop((224,224))]),
+
+        transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+    ])
+    transform2 = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+    ])
+    train_data = load_data(dataset_path='drive-download-20230329T090612Z-001/train_subset', num_workers=4, batch_size=32, transform = transform1)
+    valid_data = load_data(dataset_path='drive-download-20230329T090612Z-001/validation_subset', num_workers=4, batch_size=32, transform = transform2)
 
 
     if torch.cuda.is_available():
@@ -29,16 +47,18 @@ def train(args):
         model = model.to(device)         # move model to GPU memory
 
     print("All data loaded.")
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.003, weight_decay=0.01)
     N = len(train_data)
     best_vloss = 100000
 
     for epoch in range(50):
         print("Epoch {}".format(epoch))
         model.train()
+        print("Here")
 
         val = 0
         for i, data in enumerate(train_data):
+            print("HEre2")
             # load data and labels 
             inputs, labels = data
             if torch.cuda.is_available():
