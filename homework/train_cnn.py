@@ -54,11 +54,9 @@ def train(args):
     for epoch in range(50):
         print("Epoch {}".format(epoch))
         model.train()
-        print("Here")
 
         val = 0
         for i, data in enumerate(train_data):
-            print("HEre2")
             # load data and labels 
             inputs, labels = data
             if torch.cuda.is_available():
@@ -78,7 +76,7 @@ def train(args):
             optimizer.step()
             # Retrieve loss
             val += t_loss.item()
-            print(t_loss.item())
+            # print(t_loss.item())
             train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
             train_logger.flush()
 
@@ -100,7 +98,7 @@ def train(args):
             t_loss = loss(outputs, labels)
             # Retrieve loss
             valid_loss += t_loss.item()
-            print(t_loss.item())
+            # print(t_loss.item())
 
         valid_loss /= len(valid_data)
         valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
