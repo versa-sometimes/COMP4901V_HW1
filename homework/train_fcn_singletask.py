@@ -30,6 +30,10 @@ def train(args):
 
     weights = torch.tensor([3.29, 21.9, 4.68, 121.32, 266.84, 117.6, 1022.23, 205.68, 6.13, 118.81, 35.17, 168.36, 460.62, 15.53, 272.62, 501.94, 3536.12, 2287.91, 140.32])
     
+
+    if torch.cuda.is_available():
+        weights = weights.to(device)
+
     loss = SoftmaxCrossEntropyLoss(weights)
 
     train_data = load_dense_data('drive-download-20230401T115945Z-001/train', num_workers=4, batch_size=32, transform=train_tf)
@@ -45,9 +49,6 @@ def train(args):
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device
         model = model.to(device)         # move model to GPU memory
-        weights = weights.to(device)
-
-    
 
     print("All data loaded.")
     optimizer = torch.optim.Adam(model.parameters(), lr=0.003, weight_decay=0.01)
@@ -63,9 +64,9 @@ def train(args):
         for i, data in enumerate(train_data):
             print("HEre2")
             # load data and labels 
-            inputs, labels, _ = data
+            inputs, labels, depth = data
             if torch.cuda.is_available():
-                inputs, labels = inputs.to(device), labels.to(device)
+                inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
 
             # zero the grads
             optimizer.zero_grad()
@@ -76,8 +77,8 @@ def train(args):
             #     outputs = outputs.to(device)
 
             # calculate loss and grads
-            print(outputs.is_cuda)
-            print(weights.is_cuda)
+            # print(outputs.is_cuda)
+            # print(weights.is_cuda)
             t_loss = loss(outputs, labels)
             t_loss.backward()
 
@@ -97,9 +98,9 @@ def train(args):
         valid_loss = 0
         for i, data in enumerate(valid_data):
             # load data and labels 
-            inputs, labels, _ = data
+            inputs, labels, depth = data
             if torch.cuda.is_available():
-                inputs, labels = inputs.to(device), labels.to(device)
+                inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
             # produce one set of outputs
             outputs = model(inputs)
 
