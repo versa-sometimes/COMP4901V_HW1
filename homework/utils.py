@@ -11,10 +11,8 @@ from torchvision.transforms import functional as F
 
 from . import dense_transforms
 
-dataset_path = './drive-download-20230329T090612Z-001/train_subset'
-
 class VehicleClassificationDataset(Dataset):
-    def __init__(self, dataset_path):
+    def __init__(self, dataset_path, transform):
         """
         Your code here
         Hint: load your data from provided dataset (VehicleClassificationDataset) to train your designed model
@@ -26,17 +24,11 @@ class VehicleClassificationDataset(Dataset):
 
         # for type in os.listdir('./'+dataset_path+'/train_subset'):
         #     for file in os.listdir('./'+dataset_path+'/train_subset'+type):
-        tf = transforms.Compose([
-            transforms.Resize((224, 224)),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomRotation(10),
-            transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
-        ])
+        self.transform  = transform
         for path in glob(dataset_path+'/*'):
             for img in glob(path+'/*'):
-                self.data.append(tf(Image.open(img)))
+                print(img)
+                self.data.append(Image.open(img))
                 if path[-3:] == "cle":
                     self.label.append(0)
                 elif path[-3:] == "Car":
@@ -59,7 +51,7 @@ class VehicleClassificationDataset(Dataset):
         Hint: generate samples for training
         Hint: return image, and its image-level class label
         """
-        return self.data[idx], self.label[idx]
+        return self.transform(self.data[idx]), self.label[idx]
 
 
 class DenseCityscapesDataset(Dataset):
@@ -67,14 +59,35 @@ class DenseCityscapesDataset(Dataset):
         """
         Your code here
         """
-        raise NotImplementedError('DenseCityscapesDataset.__init__')
+        self.dataset_path = dataset_path
+        self.data = []
+        self.label = []
+        self.depth = []
+
+        self.transform = transform
+
+        for path in glob(dataset_path+'/*'):
+            for img in glob(path+'/*'):
+                if path[-3:] == "pth":
+                    self.depth.append(np.load(img))
+                    # if self.depth[-1].shape != (128, 256, 1):
+                    #     print(self.depth[-1].shape)
+                elif path[-3:] == "age":
+                    self.data.append(Image.fromarray(np.uint8(np.load(img)*255)))
+                    # if self.data[-1].shape != (128, 256, 3):
+                    #     print(self.data[-1].shape)
+                elif path[-3:] == "bel":
+                    self.label.append(dense_transforms.label_to_pil_image(np.load(img)))
+                    # if self.label[-1].shape != (128, 256, 1):
+                    #     print(self.label[-1].shape)
+        
 
     def __len__(self):
 
         """
         Your code here
         """
-        raise NotImplementedError('DenseCityscapesDataset.__len__')
+        return len(self.data)
 
     def __getitem__(self, idx):
 
@@ -82,7 +95,12 @@ class DenseCityscapesDataset(Dataset):
         Hint: generate samples for training
         Hint: return image, semantic_GT, and depth_GT
         """
-        raise NotImplementedError('DenseCityscapesDataset.__getitem__')
+        if self.transform.__class__.__name__ == "Compose3":
+            image, label, depth = self.transform(self.data[idx], self.label[idx], self.depth[idx])
+            return image, label, depth
+        else:
+            image, label = self.transform(self.data[idx], self.label[idx])
+            return image, label, self.depth[idx]
 
 
 class DenseVisualization():
