@@ -62,7 +62,6 @@ def train(args):
 
         val = 0
         for i, data in enumerate(train_data):
-            print("HEre2")
             # load data and labels 
             inputs, labels, depth = data
             if torch.cuda.is_available():
@@ -77,7 +76,6 @@ def train(args):
             #     outputs = outputs.to(device)
 
             # calculate loss and grads
-            print(outputs.shape)
             # print(weights.is_cuda)
             t_loss = loss(outputs, labels)
             t_loss.backward()
@@ -86,7 +84,7 @@ def train(args):
             optimizer.step()
             # Retrieve loss
             val += t_loss.item()
-            print(t_loss.item())
+            # print(t_loss.item())
             train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
             train_logger.flush()
 
@@ -108,7 +106,7 @@ def train(args):
             t_loss = loss(outputs, labels)
             # Retrieve loss
             valid_loss += t_loss.item()
-            print(t_loss.item())
+            # print(t_loss.item())
 
         valid_loss /= len(valid_data)
         valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
