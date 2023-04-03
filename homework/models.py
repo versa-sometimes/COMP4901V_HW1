@@ -24,7 +24,7 @@ class CNNClassifier(torch.nn.Module):
         """
         Your code here
         """
-        print(x.shape)
+        # print(x.shape)
         x = self.resnet(x)
         x = self.batch_norm(x)
         x = self.relu(x)
