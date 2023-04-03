@@ -82,6 +82,8 @@ class FCN_ST(torch.nn.Module):
         x = self.relu(x)
         x_skip4 = x.clone()
 
+        x = self.resnet.maxpool(x)
+
         x = self.resnet.layer1(x)
         x_skip3 = x.clone()
 
@@ -113,6 +115,8 @@ class FCN_ST(torch.nn.Module):
 
         x = self.up_conv4(x)
         x = self.bn4(x)
+        print(x.shape)
+        print(x)
         x = torch.cat([x, x_skip4], dim=1)
 
         x = self.conv4(x)
