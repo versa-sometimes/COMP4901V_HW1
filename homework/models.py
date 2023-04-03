@@ -175,7 +175,7 @@ class SoftmaxCrossEntropyLoss(nn.Module):
         else:
             CEloss = nn.CrossEntropyLoss(torch.tensor(self.weight), ignore_index=255, size_average=self.size_average)
             outputs = torch.softmax(inputs, 1)
-            CEloss(inputs, targets)
+            loglik = CEloss(inputs, targets)
         # loglik = torch.gather(loglik.T, 0, targets[])
         # outputs = torch.sum(outputs * targets)
 
