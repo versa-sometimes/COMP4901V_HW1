@@ -71,6 +71,8 @@ def train(args):
 
             # produce one set of outputs
             outputs = model(inputs)
+            if torch.cuda.is_available():
+                outputs = outputs.to(device)
 
             # calculate loss and grads
             t_loss = loss(outputs, labels)
