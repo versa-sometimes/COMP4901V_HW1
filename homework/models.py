@@ -124,7 +124,7 @@ class FCN_ST(torch.nn.Module):
         x = self.conv4(x)
 
         x = self.up_conv5(x)
-        x = self.bn4(x)
+        x = self.bn5(x)
 
         x = self.conv5(x)
 
