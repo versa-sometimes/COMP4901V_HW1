@@ -116,7 +116,7 @@ class FCN_ST(torch.nn.Module):
         x = self.up_conv4(x)
         x = self.bn4(x)
         print(x.shape)
-        print(x)
+        print(x_skip4.shape)
         x = torch.cat([x, x_skip4], dim=1)
 
         x = self.conv4(x)
