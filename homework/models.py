@@ -97,21 +97,25 @@ class FCN_ST(torch.nn.Module):
         x = self.bn1(x)
         x = torch.cat([x, x_skip1], dim=1)
 
-
+        x = self.conv1(x)
 
         x = self.up_conv2(x)
         x = self.bn2(x)
         x = torch.cat([x, x_skip2], dim=1)
 
+        x = self.conv2(x)
+
         x = self.up_conv3(x)
         x = self.bn3(x)
         x = torch.cat([x, x_skip3], dim=1)
+
+        x = self.conv3(x)
 
         x = self.up_conv4(x)
         x = self.bn4(x)
         x = torch.cat([x, x_skip4], dim=1)
 
-        x = self.conv(x)
+        x = self.conv4(x)
 
         return x
 
