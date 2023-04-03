@@ -66,7 +66,7 @@ class FCN_ST(torch.nn.Module):
         self.conv1 = nn.Conv2d(in_channels=1024+512, out_channels=512, kernel_size=3, stride=1, padding=1)
         self.conv2 = nn.Conv2d(in_channels=512+256, out_channels=256, kernel_size=3, stride=1, padding=1)
         self.conv3 = nn.Conv2d(in_channels=256+128, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.conv4 = nn.Conv2d(in_channels=64, out_channels=19, kernel_size=3, stride=1, padding=1)
+        self.conv4 = nn.Conv2d(in_channels=64+64, out_channels=19, kernel_size=3, stride=1, padding=1)
 
     def forward(self, x):
         """
@@ -115,8 +115,6 @@ class FCN_ST(torch.nn.Module):
 
         x = self.up_conv4(x)
         x = self.bn4(x)
-        print(x.shape)
-        print(x_skip4.shape)
         x = torch.cat([x, x_skip4], dim=1)
 
         x = self.conv4(x)
