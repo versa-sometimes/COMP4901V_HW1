@@ -64,7 +64,7 @@ class FCN_ST(torch.nn.Module):
         self.bn4 = nn.BatchNorm2d(64)
 
         self.up_conv5 = nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=3, stride=2, padding=1, output_padding=1)
-        self.bn5 = nn.BatchNorm2d(64)
+        self.bn5 = nn.BatchNorm2d(32)
 
         self.conv1 = nn.Conv2d(in_channels=1024+512, out_channels=512, kernel_size=3, stride=1, padding=1)
         self.conv2 = nn.Conv2d(in_channels=512+256, out_channels=256, kernel_size=3, stride=1, padding=1)
