@@ -77,7 +77,7 @@ def train(args):
 
             # calculate loss and grads
             print(outputs.is_cuda)
-            print(labels.is_cuda)
+            print(weights.is_cuda)
             t_loss = loss(outputs, labels)
             t_loss.backward()
 
