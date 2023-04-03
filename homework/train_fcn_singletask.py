@@ -76,6 +76,8 @@ def train(args):
                 outputs = outputs.to(device)
 
             # calculate loss and grads
+            print(outputs.is_cuda)
+            print(labels.is_cuda)
             t_loss = loss(outputs, labels)
             t_loss.backward()
 
