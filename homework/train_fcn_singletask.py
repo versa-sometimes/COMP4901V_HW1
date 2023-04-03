@@ -32,6 +32,7 @@ def train(args):
     
 
     if torch.cuda.is_available():
+        device = torch.device("cuda")    # select GPU device
         weights = weights.to(device)
 
     loss = SoftmaxCrossEntropyLoss(weights)
@@ -47,7 +48,6 @@ def train(args):
     Hint: Use the log function below to debug and visualize your model
     """
     if torch.cuda.is_available():
-        device = torch.device("cuda")    # select GPU device
         model = model.to(device)         # move model to GPU memory
 
     print("All data loaded.")
