@@ -28,7 +28,7 @@ def train(args):
             dense_transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
 
-    weights = [3.29, 21.9, 4.68, 121.32, 266.84, 117.6, 1022.23, 205.68, 6.13, 118.81, 35.17, 168.36, 460.62, 15.53, 272.62, 501.94, 3536.12, 2287.91, 140.32]
+    weights = torch.tensor([3.29, 21.9, 4.68, 121.32, 266.84, 117.6, 1022.23, 205.68, 6.13, 118.81, 35.17, 168.36, 460.62, 15.53, 272.62, 501.94, 3536.12, 2287.91, 140.32])
     
     loss = SoftmaxCrossEntropyLoss(weights)
 
@@ -45,7 +45,7 @@ def train(args):
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device
         model = model.to(device)         # move model to GPU memory
-        loss = loss.to(device)
+        weights = weights.to(device)
 
     
 
@@ -72,8 +72,8 @@ def train(args):
 
             # produce one set of outputs
             outputs = model(inputs)
-            if torch.cuda.is_available():
-                outputs = outputs.to(device)
+            # if torch.cuda.is_available():
+            #     outputs = outputs.to(device)
 
             # calculate loss and grads
             print(outputs.is_cuda)
