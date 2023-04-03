@@ -45,6 +45,7 @@ def train(args):
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device
         model = model.to(device)         # move model to GPU memory
+        loss = loss.to(device)
 
     
 
@@ -71,8 +72,6 @@ def train(args):
 
             # produce one set of outputs
             outputs = model(inputs)
-            if torch.cuda.is_available():
-                outputs = outputs.to(device)
 
             # calculate loss and grads
             t_loss = loss(outputs, labels)
