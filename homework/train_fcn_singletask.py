@@ -55,7 +55,7 @@ def train(args):
     N = len(train_data)
     best_vloss = 100000
 
-    for epoch in range(100):
+    for epoch in range(50):
         print("Epoch {}".format(epoch))
         model.train()
         # print("Here")
