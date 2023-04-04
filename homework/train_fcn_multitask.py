@@ -38,8 +38,8 @@ def train(args):
 
     loss = MultiTaskLoss(weights)
 
-    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', num_workers=4, batch_size=64, transform=train_tf)
-    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', num_workers=4, batch_size=64, transform=valid_tf)
+    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', num_workers=2, batch_size=32, transform=train_tf)
+    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', num_workers=2, batch_size=32, transform=valid_tf)
 
     """
     Your code here
