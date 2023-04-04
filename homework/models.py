@@ -236,7 +236,7 @@ class FCN_MT(torch.nn.Module):
         Hint: Use residual connections
         Hint: Always pad by kernel_size / 2, use an odd kernel_size
         """
-        raise NotImplementedError('FCN_MT.__init__')
+        
 
     def forward(self, x):
         """
