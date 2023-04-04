@@ -480,7 +480,7 @@ class MultiTaskLoss(nn.Module):
         self.L1Loss = nn.L1Loss()
 
     def forward(self, outputs_ss, labels, outputs_dp, depth):
-        ce_loss = self.CELoss(outputs_ss.argmax(1), labels)
+        ce_loss = self.CELoss(outputs_ss, labels)
         dp_loss = self.L1Loss(outputs_dp, depth)
         return ce_loss*0.5 + dp_loss*0.5
 
