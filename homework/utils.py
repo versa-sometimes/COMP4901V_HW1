@@ -97,9 +97,9 @@ class DenseCityscapesDataset(Dataset):
         Hint: return image, semantic_GT, and depth_GT
         """
         if self.transform.__class__.__name__ == "Compose3":
-            print(self.data[idx].shape)
-            print(self.label[idx].shape)
-            print(self.depth[idx].shape)
+            # print(self.data[idx].shape)
+            # print(self.label[idx].shape)
+            # print(self.depth[idx].shape)
             image, label, depth = self.transform(self.data[idx], self.label[idx], self.depth[idx])
             return image, label, depth
         else:

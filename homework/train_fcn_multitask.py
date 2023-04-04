@@ -21,12 +21,12 @@ def train(args):
             # dense_transforms.RandomHorizontalFlip(),
             # dense_transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
             dense_transforms.ToTensor3(),
-            dense_transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+            dense_transforms.Normalize3(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
     
     valid_tf = dense_transforms.Compose3([
             dense_transforms.ToTensor3(),
-            dense_transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+            dense_transforms.Normalize3(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
 
     weights = torch.tensor([3.29, 21.9, 4.68, 121.32, 266.84, 117.6, 1022.23, 205.68, 6.13, 118.81, 35.17, 168.36, 460.62, 15.53, 272.62, 501.94, 3536.12, 2287.91, 140.32])
