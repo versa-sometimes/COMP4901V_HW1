@@ -17,7 +17,7 @@ def test(args):
     """
     model = FCN_ST()
     model.eval()
-    batch_size = 64
+    batch_size = 1
     model.load_state_dict(torch.load(args.log_dir, torch.device('cpu')))
     train_data = load_dense_data('drive-download-20230401T115945Z-001/train', 2, batch_size)
     valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', 2, batch_size)

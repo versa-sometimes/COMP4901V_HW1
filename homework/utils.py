@@ -100,9 +100,11 @@ class DenseCityscapesDataset(Dataset):
             # print(self.data[idx].shape)
             # print(self.label[idx].shape)
             # print(self.depth[idx].shape)
+            idx = 0
             image, label, depth = self.transform(self.data[idx], self.label[idx], self.depth[idx])
             return image, label, depth
         else:
+            idx = 0
             image, label = self.transform(self.data[idx], self.label[idx])
             return image, label, self.depth[idx]
 
