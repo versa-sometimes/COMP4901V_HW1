@@ -69,9 +69,10 @@ class DenseCityscapesDataset(Dataset):
         for path in glob(dataset_path+'/*'):
             for img in glob(path+'/*'):
                 if path[-3:] == "pth":
-                    self.depth.append(np.load(img))
-                    # if self.depth[-1].shape != (128, 256, 1):
-                    #     print(self.depth[-1].shape)
+                    value = np.load(img) [:,:,0]
+                    disparity = (value * 65535 - 1) / 256
+                    depth = (0.222384 * 2273.82) / disparity 
+                    self.depth.append(depth)
                 elif path[-3:] == "age":
                     self.data.append(Image.fromarray(np.uint8(np.load(img)*255)))
                     # if self.data[-1].shape != (128, 256, 3):
