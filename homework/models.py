@@ -475,6 +475,7 @@ class SoftmaxCrossEntropyLoss(nn.Module):
     
 class MultiTaskLoss(nn.Module):
     def __init__(self, weight):
+        super(MultiTaskLoss, self).__init__()
         self.CELoss = nn.CrossEntropyLoss(weight)
         self.L1Loss = nn.L1Loss()
 
