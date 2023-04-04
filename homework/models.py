@@ -136,10 +136,10 @@ class FCN_ST(torch.nn.Module):
 
         x_resid0 = x.clone()
         x = self.conv0_0(x)
-        x = self.bn6_0
+        x = self.bn6_0(x)
         x = self.relu(x)
         x = self.conv0_1(x)
-        x = self.bn6_1
+        x = self.bn6_1(x)
         x += x_resid0
         x = self.relu(x)
         
