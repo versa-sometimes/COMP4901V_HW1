@@ -67,26 +67,42 @@ class FCN_ST(torch.nn.Module):
         self.bn5 = nn.BatchNorm2d(32)
 
         self.conv0_0 = nn.Conv2d(in_channels=2048, out_channels=2048, kernel_size=3, stride=1, padding=1)
+        self.bn6_0 = nn.BatchNorm2d(2048)
         self.conv0_1 = nn.Conv2d(in_channels=2048, out_channels=2048, kernel_size=3, stride=1, padding=1)
+        self.bn6_1 = nn.BatchNorm2d(2048)
 
         self.conv1_r = nn.Conv2d(in_channels=1024+512, out_channels=512, kernel_size=1, stride=1, padding=0)
+        self.bn7 = nn.BatchNorm2d(512)
         self.conv1_0 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1)
+        self.bn7_0 = nn.BatchNorm2d(512)
         self.conv1_1 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1)
+        self.bn7_1 = nn.BatchNorm2d(512)
 
         self.conv2_r = nn.Conv2d(in_channels=512+256, out_channels=256, kernel_size=1, stride=1, padding=0)
+        self.bn8 = nn.BatchNorm2d(256)
         self.conv2_0 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, stride=1, padding=1)
+        self.bn8_0 = nn.BatchNorm2d(256)
         self.conv2_1 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, stride=1, padding=1)
+        self.bn8_1 = nn.BatchNorm2d(256)
 
         self.conv3_r = nn.Conv2d(in_channels=256+128, out_channels=128, kernel_size=1, stride=1, padding=0)
+        self.bn9 = nn.BatchNorm2d(128)
         self.conv3_0 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=1, padding=1)
+        self.bn9_0 = nn.BatchNorm2d(128)
         self.conv3_1 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=1, padding=1)
+        self.bn9_1 = nn.BatchNorm2d(128)
 
         self.conv4_r = nn.Conv2d(in_channels=64+64, out_channels=64, kernel_size=1, stride=1, padding=0)
+        self.bn10 = nn.BatchNorm2d(64)
         self.conv4_0 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
+        self.bn10_0 = nn.BatchNorm2d(64)
         self.conv4_1 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
+        self.bn10_1 = nn.BatchNorm2d(64)
 
         self.conv5_0 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.bn11_0 = nn.BatchNorm2d(32)
         self.conv5_1 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.bn11_1 = nn.BatchNorm2d(32)
         self.conv5_2 = nn.Conv2d(in_channels=32, out_channels=19, kernel_size=1, stride=1, padding=0)
 
         self.dropout = nn.Dropout2d(0.2)
@@ -120,21 +136,27 @@ class FCN_ST(torch.nn.Module):
 
         x_resid0 = x.clone()
         x = self.conv0_0(x)
+        x = self.bn6_0
         x = self.relu(x)
         x = self.conv0_1(x)
+        x = self.bn6_1
         x += x_resid0
         x = self.relu(x)
+        
         
         x = self.up_conv1(x)
         x = self.bn1(x)
         x = torch.cat([x, x_skip1], dim=1)
 
         x = self.conv1_r(x)
+        x = self.bn7(x)
         x = self.dropout(x)
         x_resid1 = x.clone()
         x = self.conv1_0(x)
+        x = self.bn7_0(x)
         x = self.relu(x)
         x = self.conv1_1(x)
+        x = self.bn7_1(x)
         x += x_resid1
         x = self.relu(x)
 
@@ -143,11 +165,14 @@ class FCN_ST(torch.nn.Module):
         x = torch.cat([x, x_skip2], dim=1)
 
         x = self.conv2_r(x)
+        x = self.bn8(x)
         x = self.dropout(x)
         x_resid2 = x.clone()
         x = self.conv2_0(x)
+        x = self.bn8_0(x)
         x = self.relu(x)
         x = self.conv2_1(x)
+        x = self.bn8_1(x)
         x += x_resid2
         x = self.relu(x)
 
@@ -156,11 +181,14 @@ class FCN_ST(torch.nn.Module):
         x = torch.cat([x, x_skip3], dim=1)
 
         x = self.conv3_r(x)
+        x = self.bn9(x)
         x = self.dropout(x)
         x_resid3 = x.clone()
         x = self.conv3_0(x)
+        x = self.bn9_0(x)
         x = self.relu(x)
         x = self.conv3_1(x)
+        x = self.bn9_1(x)
         x += x_resid3
         x = self.relu(x)
 
@@ -169,11 +197,14 @@ class FCN_ST(torch.nn.Module):
         x = torch.cat([x, x_skip4], dim=1)
 
         x = self.conv4_r(x)
+        x = self.bn10(x)
         x = self.dropout(x)
         x_resid4 = x.clone()
         x = self.conv4_0(x)
+        x = self.bn10_0(x)
         x = self.relu(x)
         x = self.conv4_1(x)
+        x = self.bn10_1(x)
         x += x_resid4
         x = self.relu(x)
 
@@ -183,8 +214,10 @@ class FCN_ST(torch.nn.Module):
         x = self.dropout(x)
         x_resid5 = x.clone()
         x = self.conv5_0(x)
+        x = self.bn11_0(x)
         x = self.relu(x)
         x = self.conv5_1(x)
+        x = self.bn11_1(x)
         x += x_resid5
         x = self.relu(x)
         x = self.conv5_2(x)
