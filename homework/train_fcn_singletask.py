@@ -55,7 +55,7 @@ def train(args):
     N = len(train_data)
     best_vloss = 100000
 
-    for epoch in range(50):
+    for epoch in range(100):
         print("Epoch {}".format(epoch))
         model.train()
         # print("Here")
@@ -66,7 +66,6 @@ def train(args):
             inputs, labels, depth = data
             if torch.cuda.is_available():
                 inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
-                
 
             # zero the grads
             optimizer.zero_grad()
@@ -119,7 +118,6 @@ def train(args):
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             model_path = 'model_{}_{}'.format(timestamp, epoch)
             torch.save(model.state_dict(), model_path)
-
 
     save_model(model)
 
