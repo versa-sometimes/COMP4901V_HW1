@@ -40,7 +40,7 @@ def test(args):
             outputs = outputs.max(1)[1]
             # print(outputs.shape)
 
-            train_cm.add(labels, labels)
+            train_cm.add(outputs, labels)
         print("Clear 1")
 
         for i, data in enumerate(valid_data):
