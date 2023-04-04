@@ -90,7 +90,8 @@ def test(args):
     print(test_cm.iou)
     print(test_cm.class_iou)
 
-    print("End")    
+    print("End")
+        
 
     return train_cm.average_accuracy, valid_cm.average_accuracy, test_cm.average_accuracy
 

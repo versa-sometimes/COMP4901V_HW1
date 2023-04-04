@@ -66,6 +66,7 @@ def train(args):
             inputs, labels, depth = data
             if torch.cuda.is_available():
                 inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
+                
 
             # zero the grads
             optimizer.zero_grad()
