@@ -120,6 +120,7 @@ def train(args):
             model_path = 'model_{}_{}'.format(timestamp, epoch)
             torch.save(model.state_dict(), model_path)
 
+
     save_model(model)
 
 
