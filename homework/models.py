@@ -66,11 +66,30 @@ class FCN_ST(torch.nn.Module):
         self.up_conv5 = nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=3, stride=2, padding=1, output_padding=1)
         self.bn5 = nn.BatchNorm2d(32)
 
-        self.conv1 = nn.Conv2d(in_channels=1024+512, out_channels=512, kernel_size=3, stride=1, padding=1)
-        self.conv2 = nn.Conv2d(in_channels=512+256, out_channels=256, kernel_size=3, stride=1, padding=1)
-        self.conv3 = nn.Conv2d(in_channels=256+128, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.conv4 = nn.Conv2d(in_channels=64+64, out_channels=64, kernel_size=3, stride=1, padding=1)
-        self.conv5 = nn.Conv2d(in_channels=32, out_channels=19, kernel_size=3, stride=1, padding=1)
+        self.conv0_0 = nn.Conv2d(in_channels=2048, out_channels=2048, kernel_size=3, stride=1, padding=1)
+        self.conv0_1 = nn.Conv2d(in_channels=2048, out_channels=2048, kernel_size=3, stride=1, padding=1)
+
+        self.conv1_r = nn.Conv2d(in_channels=1024+512, out_channels=512, kernel_size=1, stride=1, padding=0)
+        self.conv1_0 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1)
+        self.conv1_1 = nn.Conv2d(in_channels=512, out_channels=512, kernel_size=3, stride=1, padding=1)
+
+        self.conv2_r = nn.Conv2d(in_channels=512+256, out_channels=256, kernel_size=1, stride=1, padding=0)
+        self.conv2_0 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, stride=1, padding=1)
+        self.conv2_1 = nn.Conv2d(in_channels=256, out_channels=256, kernel_size=3, stride=1, padding=1)
+
+        self.conv3_r = nn.Conv2d(in_channels=256+128, out_channels=128, kernel_size=1, stride=1, padding=0)
+        self.conv3_0 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=1, padding=1)
+        self.conv3_1 = nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=1, padding=1)
+
+        self.conv4_r = nn.Conv2d(in_channels=64+64, out_channels=64, kernel_size=1, stride=1, padding=0)
+        self.conv4_0 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
+        self.conv4_1 = nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
+
+        self.conv5_0 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.conv5_1 = nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.conv5_2 = nn.Conv2d(in_channels=32, out_channels=19, kernel_size=1, stride=1, padding=0)
+
+        self.dropout = nn.Dropout2d(0.2)
 
     def forward(self, x):
         """
@@ -84,10 +103,10 @@ class FCN_ST(torch.nn.Module):
         x = self.resnet.conv1(x)
         x = self.resnet.bn1(x)
         x = self.relu(x)
+
         x_skip4 = x.clone()
 
         x = self.resnet.maxpool(x)
-
         x = self.resnet.layer1(x)
         x_skip3 = x.clone()
 
@@ -98,35 +117,77 @@ class FCN_ST(torch.nn.Module):
         x_skip1 = x.clone()
 
         x = self.resnet.layer4(x)
+
+        x_resid0 = x.clone()
+        x = self.conv0_0(x)
+        x = self.relu(x)
+        x = self.conv0_1(x)
+        x += x_resid0
+        x = self.relu(x)
         
         x = self.up_conv1(x)
         x = self.bn1(x)
         x = torch.cat([x, x_skip1], dim=1)
 
-        x = self.conv1(x)
+        x = self.conv1_r(x)
+        x = self.dropout(x)
+        x_resid1 = x.clone()
+        x = self.conv1_0(x)
+        x = self.relu(x)
+        x = self.conv1_1(x)
+        x += x_resid1
+        x = self.relu(x)
 
         x = self.up_conv2(x)
         x = self.bn2(x)
         x = torch.cat([x, x_skip2], dim=1)
 
-        x = self.conv2(x)
+        x = self.conv2_r(x)
+        x = self.dropout(x)
+        x_resid2 = x.clone()
+        x = self.conv2_0(x)
+        x = self.relu(x)
+        x = self.conv2_1(x)
+        x += x_resid2
+        x = self.relu(x)
 
         x = self.up_conv3(x)
         x = self.bn3(x)
         x = torch.cat([x, x_skip3], dim=1)
 
-        x = self.conv3(x)
+        x = self.conv3_r(x)
+        x = self.dropout(x)
+        x_resid3 = x.clone()
+        x = self.conv3_0(x)
+        x = self.relu(x)
+        x = self.conv3_1(x)
+        x += x_resid3
+        x = self.relu(x)
 
         x = self.up_conv4(x)
         x = self.bn4(x)
         x = torch.cat([x, x_skip4], dim=1)
 
-        x = self.conv4(x)
+        x = self.conv4_r(x)
+        x = self.dropout(x)
+        x_resid4 = x.clone()
+        x = self.conv4_0(x)
+        x = self.relu(x)
+        x = self.conv4_1(x)
+        x += x_resid4
+        x = self.relu(x)
 
         x = self.up_conv5(x)
         x = self.bn5(x)
 
-        x = self.conv5(x)
+        x = self.dropout(x)
+        x_resid5 = x.clone()
+        x = self.conv5_0(x)
+        x = self.relu(x)
+        x = self.conv5_1(x)
+        x += x_resid5
+        x = self.relu(x)
+        x = self.conv5_2(x)
 
         return x
 
