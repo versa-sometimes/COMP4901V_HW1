@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-from .models import FCN_MT, save_model, MultiTaskLoss
+from .models import FCN_MT, save_model#, MultiTaskLoss
 from .utils import load_dense_data, ConfusionMatrix
 from . import dense_transforms
 import torch.utils.tensorboard as tb
@@ -36,7 +36,8 @@ def train(args):
         device = torch.device("cuda")    # select GPU device
         weights = weights.to(device)
 
-    loss = MultiTaskLoss(weights)
+    loss_ss = torch.nn.CrossEntropyLoss(weights, ignore_index=255)
+    loss_dp = torch.nn.L1Loss()
 
     train_data = load_dense_data('drive-download-20230401T115945Z-001/train', num_workers=2, batch_size=32, transform=train_tf)
     valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', num_workers=2, batch_size=32, transform=valid_tf)
@@ -78,15 +79,18 @@ def train(args):
 
             # calculate loss and grads
             # print(weights.is_cuda)
-            t_loss_ss = loss(outputs_ss, labels, outputs_dp, depth)
-            t_loss_ss.backward()
+            outputs_ss = outputs_ss.softmax(1)
+            t_loss_ss = loss_ss(outputs_ss, labels)
+            t_loss_dp = loss_dp(outputs_dp, depth)
+            total_loss = t_loss_ss + t_loss_dp
+            total_loss.backward()
 
             # Adjust weights
             optimizer.step()
             # Retrieve loss
-            val += t_loss_ss.item()
+            val += total_loss.item()
             # print(t_loss.item())
-            train_logger.add_scalar('train', t_loss_ss.item(), i + N * epoch)
+            train_logger.add_scalar('train', total_loss.item(), i + N * epoch)
             train_logger.flush()
 
         val /= len(train_data)
@@ -107,12 +111,14 @@ def train(args):
 
             # calculate loss and grads
             # print(weights.is_cuda)
-            t_loss_ss = loss(outputs_ss, labels, outputs_dp, depth)
-            t_loss_ss.backward()
+            outputs_ss = outputs_ss.softmax(1)
+            t_loss_ss = loss_ss(outputs_ss, labels)
+            t_loss_dp = loss_dp(outputs_dp, depth)
+            total_loss = t_loss_ss + t_loss_dp
 
             # Adjust weights
             # Retrieve loss
-            val += t_loss_ss.item()
+            val += total_loss.item()
 
         valid_loss /= len(valid_data)
         valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)

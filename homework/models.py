@@ -473,16 +473,16 @@ class SoftmaxCrossEntropyLoss(nn.Module):
         else:
             return loglik.sum()
     
-class MultiTaskLoss(nn.Module):
-    def __init__(self, weight):
-        super(MultiTaskLoss, self).__init__()
-        self.CELoss = nn.CrossEntropyLoss(weight, ignore_index=255)
-        self.L1Loss = nn.L1Loss()
+# class MultiTaskLoss(nn.Module):
+#     def __init__(self, weight):
+#         super(MultiTaskLoss, self).__init__()
+#         self.CELoss = nn.CrossEntropyLoss(weight, ignore_index=255)
+#         self.L1Loss = nn.L1Loss()
 
-    def forward(self, outputs_ss, labels, outputs_dp, depth):
-        ce_loss = self.CELoss(outputs_ss, labels)
-        dp_loss = self.L1Loss(outputs_dp, depth)
-        return ce_loss*0.5 + dp_loss*0.5
+#     def forward(self, outputs_ss, labels, outputs_dp, depth):
+#         ce_loss = self.CELoss(outputs_ss, labels)
+#         dp_loss = self.L1Loss(outputs_dp, depth)
+#         return ce_loss*0.5 + dp_loss*0.5
 
 model_factory = {
     'cnn': CNNClassifier,
