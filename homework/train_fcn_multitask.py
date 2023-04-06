@@ -39,8 +39,8 @@ def train(args):
     loss_ss = torch.nn.CrossEntropyLoss(weights, ignore_index=255)
     loss_dp = torch.nn.L1Loss()
 
-    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', num_workers=2, batch_size=32, transform=train_tf)
-    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', num_workers=2, batch_size=32, transform=valid_tf)
+    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', num_workers=2, batch_size=64, transform=train_tf)
+    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', num_workers=2, batch_size=64, transform=valid_tf)
 
     """
     Your code here
@@ -118,7 +118,7 @@ def train(args):
 
             # Adjust weights
             # Retrieve loss
-            val += total_loss.item()
+            valid_loss += total_loss.item()
 
         valid_loss /= len(valid_data)
         valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
