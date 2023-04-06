@@ -29,7 +29,6 @@ class VehicleClassificationDataset(Dataset):
         self.transform  = transform
         for path in glob(dataset_path+'/*'):
             for img in glob(path+'/*'):
-                print(img)
                 self.data.append(Image.open(img))
                 if path[-3:] == "cle":
                     self.label.append(0)
@@ -75,7 +74,6 @@ class DenseCityscapesDataset(Dataset):
                     disparity = (value * 65535 - 1) / 256
                     depth = (0.222384 * 2273.82) / disparity 
                     depth[depth < 0] = 0
-                    print(depth)
                     self.depth.append(depth)
                 elif path[-3:] == "age":
                     self.data.append(Image.fromarray(np.uint8(np.load(img)*255)))
