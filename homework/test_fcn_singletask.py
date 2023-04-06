@@ -5,6 +5,7 @@ from .models import FCN_ST
 from .utils import load_dense_data, ConfusionMatrix
 from . import dense_transforms
 import torch.utils.tensorboard as tb
+import matplotlib.pyplot as plt
 
 
 def test(args):
@@ -15,13 +16,18 @@ def test(args):
     Hint: use the ConfusionMatrix for you to calculate accuracy, mIoU for the segmentation task
      
     """
+    tf = dense_transforms.Compose([
+            dense_transforms.ToTensor(),
+            dense_transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+        ])
+    
     model = FCN_ST()
     model.eval()
     batch_size = 64
     model.load_state_dict(torch.load(args.log_dir, torch.device('cpu')))
-    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', 2, batch_size)
-    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', 2, batch_size)
-    test_data = load_dense_data('drive-download-20230401T115945Z-001/test', 2, batch_size)
+    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', 2, batch_size, transforms = tf)
+    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', 2, batch_size, transforms = tf)
+    test_data = load_dense_data('drive-download-20230401T115945Z-001/test', 2, batch_size, transforms = tf)
 
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device
@@ -95,6 +101,27 @@ def test(args):
 
     return train_cm.average_accuracy, valid_cm.average_accuracy, test_cm.average_accuracy
 
+# class DenseVisualization():
+#     def __init__(self, img, segmentation):
+#         self.img = img
+#         self.segmentation = segmentation
+
+#     def __visualizeitem__(self):
+#         """
+#         Your code here
+#         Hint: you can visualize your model predictions and save them into images. 
+#         """
+#         plt.figure()
+#         f, axarr = plt.subplots(3, 6)
+#         model = FCN_ST()
+#         output_ss = model(self.img)
+#         for i in range(5):
+#             for j in range(6):
+#                 axarr[j].imshow(self.img[j])
+#             for j in range(6,12):
+#                 axarr[j].imshow(dense_transforms.label_to_pil_image(output_ss[j])) 
+#             for j in range(12,18):
+#                 axarr[j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j])) 
 
 if __name__ == '__main__':
     import argparse
@@ -107,3 +134,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     test(args)
+    # dv = DenseVisualization()
+    # dv.
