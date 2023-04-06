@@ -57,7 +57,7 @@ def train(args):
 
     for epoch in range(100):
 
-        train_cm = ConfusionMatrix(19)
+        # train_cm = ConfusionMatrix(19)
         print("Epoch {}".format(epoch))
         model.train()
         # print("Here")
@@ -79,9 +79,9 @@ def train(args):
 
             # calculate loss and grads
             # print(weights.is_cuda)
-            if (epoch+1) % 5 == 0:
-                sols = outputs.max(1)[1]
-                train_cm.add(sols, labels)
+            # if (epoch+1) % 5 == 0:
+            #     sols = outputs.max(1)[1]
+            #     train_cm.add(sols, labels)
                 
             t_loss = loss(outputs, labels)
             t_loss.backward()
@@ -95,12 +95,12 @@ def train(args):
             train_logger.flush()
 
         
-        if (epoch+1) % 5 == 0:
-            print(train_cm.global_accuracy)
-            print(train_cm.class_accuracy)
-            print(train_cm.average_accuracy)
-            print(train_cm.iou)
-            print(train_cm.class_iou)
+        # if (epoch+1) % 5 == 0:
+        #     print(train_cm.global_accuracy)
+        #     print(train_cm.class_accuracy)
+        #     print(train_cm.average_accuracy)
+        #     print(train_cm.iou)
+        #     print(train_cm.class_iou)
 
         val /= len(train_data)
         print('Epoch {}, training loss: {}'.format(epoch, val))
