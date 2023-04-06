@@ -25,9 +25,9 @@ def test(args):
     model.eval()
     batch_size = 64
     model.load_state_dict(torch.load(args.log_dir, torch.device('cpu')))
-    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', 2, batch_size, transforms = tf)
-    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', 2, batch_size, transforms = tf)
-    test_data = load_dense_data('drive-download-20230401T115945Z-001/test', 2, batch_size, transforms = tf)
+    train_data = load_dense_data('drive-download-20230401T115945Z-001/train', 2, batch_size, transform = tf)
+    valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', 2, batch_size, transform = tf)
+    test_data = load_dense_data('drive-download-20230401T115945Z-001/test', 2, batch_size, transform = tf)
 
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device
