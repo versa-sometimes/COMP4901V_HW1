@@ -8,8 +8,10 @@ from glob import glob
 from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import functional as F
+from .models import FCN_MT
 
 from . import dense_transforms
+import matplotlib.pyplot as plt
 
 class VehicleClassificationDataset(Dataset):
     def __init__(self, dataset_path, transform):
@@ -69,9 +71,11 @@ class DenseCityscapesDataset(Dataset):
         for path in glob(dataset_path+'/*'):
             for img in glob(path+'/*'):
                 if path[-3:] == "pth":
-                    value = np.load(img) [:,:,0]
+                    value = np.load(img)[:,:,0]
                     disparity = (value * 65535 - 1) / 256
                     depth = (0.222384 * 2273.82) / disparity 
+                    depth[depth < 0] = 0
+                    print(depth)
                     self.depth.append(depth)
                 elif path[-3:] == "age":
                     self.data.append(Image.fromarray(np.uint8(np.load(img)*255)))
@@ -100,11 +104,9 @@ class DenseCityscapesDataset(Dataset):
             # print(self.data[idx].shape)
             # print(self.label[idx].shape)
             # print(self.depth[idx].shape)
-            idx = 0
             image, label, depth = self.transform(self.data[idx], self.label[idx], self.depth[idx])
             return image, label, depth
         else:
-            idx = 0
             image, label = self.transform(self.data[idx], self.label[idx])
             return image, label, self.depth[idx]
 
@@ -120,8 +122,21 @@ class DenseVisualization():
         Your code here
         Hint: you can visualize your model predictions and save them into images. 
         """
-        raise NotImplementedError('DenseVisualization.__visualizeitem__')
-
+        plt.figure()
+        f, axarr = plt.subplots(5, 6)
+        model = FCN_MT()
+        output_ss, output_dp = model(self.img)
+        for i in range(5):
+            for j in range(6):
+                axarr[j].imshow(self.img[j])
+            for j in range(6,12):
+                axarr[j].imshow(output_dp[j], cmap="plasma") 
+            for j in range(12,18):
+                axarr[j].imshow(self.depth[j], cmap="plasma") 
+            for j in range(18,24):
+                axarr[j].imshow(dense_transforms.label_to_pil_image(output_ss[j])) 
+            for j in range(24,30):
+                axarr[j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j])) 
 
 def load_data(dataset_path, num_workers=0, batch_size=128, **kwargs):
     dataset = VehicleClassificationDataset(dataset_path, **kwargs)
