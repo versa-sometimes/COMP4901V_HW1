@@ -80,7 +80,7 @@ def train(args):
                 sols = outputs.max(1)[1]
                 train_cm.add(sols, labels)
                 if not log_flag:
-                    log(train_logger, inputs[0], labels[0], outputs[0], epoch)
+                    log(train_logger, inputs[0], labels[0], outputs[0].reshape(outputs.shape[1:]), epoch)
                     log_flag=True
                 
             t_loss = loss(outputs, labels)
