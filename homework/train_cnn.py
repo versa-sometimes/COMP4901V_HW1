@@ -57,48 +57,39 @@ def train(args):
 
         val = 0
         for i, data in enumerate(train_data):
-            # load data and labels 
             inputs, labels = data
             if torch.cuda.is_available():
                 inputs, labels = inputs.to(device), labels.to(device)
 
-            # zero the grads
             optimizer.zero_grad()
 
-            # produce one set of outputs
             outputs = model(inputs)
 
-            # calculate loss and grads
             t_loss = loss(outputs, labels)
             t_loss.backward()
 
-            # Adjust weights
             optimizer.step()
-            # Retrieve loss
+
             val += t_loss.item()
-            # print(t_loss.item())
-            train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
-            train_logger.flush()
 
         val /= len(train_data)
+        train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
+        train_logger.flush()
         print('Epoch {}, training loss: {}'.format(epoch, val))
 
         model.eval()
 
         valid_loss = 0
         for i, data in enumerate(valid_data):
-            # load data and labels 
             inputs, labels = data
             if torch.cuda.is_available():
                 inputs, labels = inputs.to(device), labels.to(device)
-            # produce one set of outputs
+
             outputs = model(inputs)
 
-            # calculate loss and grads
             t_loss = loss(outputs, labels)
-            # Retrieve loss
+
             valid_loss += t_loss.item()
-            # print(t_loss.item())
 
         valid_loss /= len(valid_data)
         valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
@@ -120,11 +111,5 @@ if __name__ == '__main__':
     parser.add_argument('--log_dir')
     # Put custom arguments here
 
-    # from os import path
     args = parser.parse_args()
-    # train_logger = tb.SummaryWriter(path.join(args.log_dir, 'train'), flush_secs=1)
-    # i = 0
-    # while True:
-    #     i += 1 
-    #     train_logger.add_scalar('y=2x', i * 2, i)
     train(args)
