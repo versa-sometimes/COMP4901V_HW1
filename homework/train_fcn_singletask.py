@@ -141,10 +141,10 @@ def log(logger, imgs, lbls, logits, global_step):
     global_step: iteration
     """
     logger.add_image('image', imgs[0], global_step)
-    logger.add_image('label', np.array(dense_transforms.label_to_pil_image(lbls[0].cpu()).
+    logger.add_image('label', np.array(dense_transforms.label_to_pil_image(lbls.cpu()).
                                              convert('RGB')), global_step, dataformats='HWC')
     logger.add_image('prediction', np.array(dense_transforms.
-                                                  label_to_pil_image(logits[0].argmax(dim=0).cpu()).
+                                                  label_to_pil_image(logits.argmax(dim=0).cpu()).
                                                   convert('RGB')), global_step, dataformats='HWC')
 
 if __name__ == '__main__':
