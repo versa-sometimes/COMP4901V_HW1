@@ -18,7 +18,8 @@ class CNNClassifier(torch.nn.Module):
         
         self.dropout = nn.Dropout(p=0.5)
         
-        self.batch_norm = nn.BatchNorm1d(1024)
+        self.batch_norm1 = nn.BatchNorm1d(1024)
+        self.batch_norm2 = nn.BatchNorm1d(512)
         # self.pred_score = nn.Softmax(6)
 
     def forward(self, x):
@@ -27,12 +28,12 @@ class CNNClassifier(torch.nn.Module):
         """
         # print(x.shape)
         x = self.resnet(x)
-        x = self.batch_norm(x)
+        x = self.batch_norm1(x)
         x = self.relu(x)
         x = self.dropout(x)
         x = self.fc2(x)
 
-        x = self.batch_norm(x)
+        x = self.batch_norm2(x)
         x = self.relu(x)
         x = self.dropout(x)
         x = self.fc3(x)
