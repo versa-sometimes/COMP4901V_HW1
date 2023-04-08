@@ -32,27 +32,38 @@ def test(args):
     test_cm = ConfusionMatrix(19)
 
     with torch.no_grad():
+        abs_rel, a1, a2, a3 = 0,0,0,0
         for i, data in enumerate(train_data):
             inputs, labels, depth = data
             if torch.cuda.is_available():
                 inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
-            outputs = model(inputs)
-            outputs = outputs.max(1)[1]
+            output_ss, output_dp = model(inputs)
+            output_ss = output_ss.max(1)[1]
             # print(outputs.shape)
+            train_cm.add(output_ss, labels)
+            de = DepthError(output_dp, depth)
+            nabs_rel, na1, na2, na3 = de.compute_errors()
+            abs_rel += nabs_rel
+            a1 += na1
+            a2 += na2
+            a3 += na3
 
-            train_cm.add(outputs, labels)
+        abs_rel /= i
+        a1 /= i
+        a2 /= i
+        a3 /= i
+
         print("Clear 1")
 
+        abs_rel, a1, a2, a3 = 0,0,0,0
         for i, data in enumerate(valid_data):
             inputs, labels, depth = data
             if torch.cuda.is_available():
                 inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
-            outputs = model(inputs)
-            outputs = outputs.max(1)[1]
-
+            output_ss, output_dp = model(inputs)
+            output_ss = output_ss.max(1)[1]
             # print(outputs.shape)
-
-            valid_cm.add(outputs, labels)
+            valid_cm.add(output_ss, labels)
         
         print("Clear 2")
 
@@ -60,12 +71,10 @@ def test(args):
             inputs, labels, depth = data
             if torch.cuda.is_available():
                 inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
-            outputs = model(inputs)
-            outputs = outputs.max(1)[1]
-
+            output_ss, output_dp = model(inputs)
+            output_ss = output_ss.max(1)[1]
             # print(outputs.shape)
-
-            test_cm.add(outputs, labels)
+            test_cm.add(output_ss, labels)
 
         print("Clear all")
 
