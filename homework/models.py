@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.models import resnet50
-from .dense_transforms import Normalize3
+from torchvision.transforms import Normalize
 
 class CNNClassifier(torch.nn.Module):
     def __init__(self):
@@ -415,7 +415,7 @@ class FCN_MT(torch.nn.Module):
         self.fcn_st = FCN_ST()
         
         self.dp_head = DP_Head()
-        self.norm = Normalize3(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+        self.norm = Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 
     def forward(self, x):
         """
