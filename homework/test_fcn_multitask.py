@@ -48,7 +48,7 @@ def test(args):
 
             for i, d in enumerate(output_dp):
                 trN += 1
-                de = DepthError(d, depth[i])
+                de = DepthError(d.cpu(), depth[i].cpu())
                 nabs_rel, na1, na2, na3 = de.compute_errors()
                 trabs_rel += nabs_rel
                 tra1 += na1
@@ -67,7 +67,7 @@ def test(args):
 
             for i, d in enumerate(output_dp):
                 vaN += 1
-                de = DepthError(d, depth[i])
+                de = DepthError(d.cpu(), depth[i].cpu())
                 nabs_rel, na1, na2, na3 = de.compute_errors()
                 vaabs_rel += nabs_rel
                 vaa1 += na1
@@ -87,7 +87,7 @@ def test(args):
 
             for i, d in enumerate(output_dp):
                 teN += 1
-                de = DepthError(d, depth[i])
+                de = DepthError(d.cpu(), depth[i].cpu())
                 nabs_rel, na1, na2, na3 = de.compute_errors()
                 teabs_rel += nabs_rel
                 tea1 += na1
