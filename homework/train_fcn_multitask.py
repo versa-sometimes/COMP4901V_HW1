@@ -104,7 +104,7 @@ def train(args):
             if t_loss_dp.item() > max_loss_2:
                 max_loss_2 = t_loss_dp.item()
 
-            total_loss = (2*max_loss_1*max_loss_2/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
+            total_loss = (1/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
             total_loss.backward()
 
             # Adjust weights
@@ -133,7 +133,7 @@ def train(args):
             t_loss_ss = loss_ss(outputs_ss, labels)
             t_loss_dp = loss_dp(outputs_dp, depth)
             
-            total_loss = (2*max_loss_1*max_loss_2/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
+            total_loss = (1/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
             # Retrieve loss
             valid_loss += total_loss.item()
 
