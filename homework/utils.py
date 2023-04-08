@@ -77,12 +77,8 @@ class DenseCityscapesDataset(Dataset):
                     self.depth.append(depth)
                 elif path[-3:] == "age":
                     self.data.append(Image.fromarray(np.uint8(np.load(img)*255)))
-                    # if self.data[-1].shape != (128, 256, 3):
-                    #     print(self.data[-1].shape)
                 elif path[-3:] == "bel":
                     self.label.append(dense_transforms.label_to_pil_image(np.load(img)))
-                    # if self.label[-1].shape != (128, 256, 1):
-                    #     print(self.label[-1].shape)
         
 
     def __len__(self):
@@ -130,8 +126,8 @@ class DenseVisualization():
             axarr[0, j].imshow(self.img[j].permute((1,2,0)))
             axarr[1, j].imshow(output_dp[j].detach().reshape(output_dp[j].shape[1:]), cmap="plasma") 
             axarr[2, j].imshow(self.depth[j].detach().reshape(output_dp[j].shape[1:]), cmap="plasma") 
-            axarr[3, j].imshow(dense_transforms.label_to_pil_image(output_ss[j].detach())) 
-            axarr[4, j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j].detach())) 
+            axarr[3, j].imshow(dense_transforms.label_to_pil_image(output_ss[j].detach()).convert('RGB')) 
+            axarr[4, j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j].detach()).convert('RGB')) 
 
         f.savefig('vis.png')
 
