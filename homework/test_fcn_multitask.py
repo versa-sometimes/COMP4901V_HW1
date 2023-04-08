@@ -96,16 +96,19 @@ def test(args):
 
         print("Clear all")
 
+    trN = len(train_data)*64
     trabs_rel /= trN
     tra1 /= trN
     tra2 /= trN
     tra3 /= trN
 
+    vaN = len(valid_data)*64
     vaabs_rel /= vaN
     vaa1 /= vaN
     vaa2 /= vaN
     vaa3 /= vaN
 
+    teN = len(test_data)*64
     teabs_rel /= teN
     tea1 /= teN
     tea2 /= teN
