@@ -13,7 +13,8 @@ class CNNClassifier(torch.nn.Module):
         self.resnet = resnet50(pretrained=True)
         self.resnet.fc = nn.Linear(in_features=2048, out_features=1024, bias=True)
         self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(in_features=1024, out_features=6, bias=True)
+        self.fc2 = nn.Linear(in_features=1024, out_features=512, bias=True)
+        self.fc3 = nn.Linear(in_features=512, out_features=6, bias=True)
         
         self.dropout = nn.Dropout(p=0.5)
         
@@ -30,7 +31,12 @@ class CNNClassifier(torch.nn.Module):
         x = self.relu(x)
         x = self.dropout(x)
         x = self.fc2(x)
-    
+
+        x = self.batch_norm(x)
+        x = self.relu(x)
+        x = self.dropout(x)
+        x = self.fc3(x)
+
         return x
     
 class ST_Head(torch.nn.Module):
