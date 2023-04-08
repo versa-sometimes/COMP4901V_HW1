@@ -58,6 +58,9 @@ def train(args):
     N = len(train_data)
     best_vloss = 100000
 
+    max_loss_1 = 0
+    max_loss_2 = 0
+
     for epoch in range(100):
 
         log_flag = False
@@ -91,7 +94,14 @@ def train(args):
             outputs_ss = outputs_ss.softmax(1)
             t_loss_ss = loss_ss(outputs_ss, labels)
             t_loss_dp = loss_dp(outputs_dp, depth)
-            total_loss = t_loss_ss + t_loss_dp
+
+            if t_loss_ss.item() > max_loss_1:
+                max_loss_1 = t_loss_ss.item()
+
+            if t_loss_dp.item() > max_loss_2:
+                max_loss_2 = t_loss_dp.item()
+
+            total_loss = (1/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
             total_loss.backward()
 
             # Adjust weights
@@ -119,7 +129,8 @@ def train(args):
             outputs_ss = outputs_ss.softmax(1)
             t_loss_ss = loss_ss(outputs_ss, labels)
             t_loss_dp = loss_dp(outputs_dp, depth)
-            total_loss = t_loss_ss + t_loss_dp
+            
+            total_loss = (1/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
             # Retrieve loss
             valid_loss += total_loss.item()
 
