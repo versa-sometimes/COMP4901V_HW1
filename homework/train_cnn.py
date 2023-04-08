@@ -38,8 +38,8 @@ def train(args):
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
     ])
-    train_data = load_data(dataset_path='drive-download-20230329T090612Z-001/train_subset', num_workers=0, batch_size=32, transform = transform1)
-    valid_data = load_data(dataset_path='drive-download-20230329T090612Z-001/validation_subset', num_workers=0, batch_size=32, transform = transform2)
+    train_data = load_data(dataset_path='drive-download-20230329T090612Z-001/train_subset', num_workers=2, batch_size=64, transform = transform1)
+    valid_data = load_data(dataset_path='drive-download-20230329T090612Z-001/validation_subset', num_workers=2, batch_size=64, transform = transform2)
 
 
     if torch.cuda.is_available():
