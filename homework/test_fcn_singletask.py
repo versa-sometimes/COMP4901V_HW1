@@ -24,7 +24,7 @@ def test(args):
     model = FCN_ST()
     model.eval()
     batch_size = 64
-    model.load_state_dict(torch.load(args.log_dir, torch.device('cpu')))
+    model.load_state_dict(torch.load(args.model_dir, torch.device('cpu')))
     train_data = load_dense_data('drive-download-20230401T115945Z-001/train', 2, batch_size, transform = tf)
     valid_data = load_dense_data('drive-download-20230401T115945Z-001/val', 2, batch_size, transform = tf)
     test_data = load_dense_data('drive-download-20230401T115945Z-001/test', 2, batch_size, transform = tf)
@@ -105,7 +105,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--log_dir')
+    parser.add_argument('--model_dir')
     # Put custom arguments here
 
     args = parser.parse_args()
