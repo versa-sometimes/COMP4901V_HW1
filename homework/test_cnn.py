@@ -19,8 +19,8 @@ def test(args):
         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
     ])
 
-    train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size, transforms=transform)
-    valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size, transforms=transform)
+    train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size, transform=transform)
+    valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size, transform=transform)
 
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device
