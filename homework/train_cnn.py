@@ -60,7 +60,7 @@ def train(args):
             inputs, labels = data
             if torch.cuda.is_available():
                 inputs, labels = inputs.to(device), labels.to(device)
-
+            print("BG", i)
             optimizer.zero_grad()
 
             outputs = model(inputs)
