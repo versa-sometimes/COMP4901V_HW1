@@ -48,7 +48,10 @@ def train(args):
     Hint: Use the log function below to debug and visualize your model
     """
     if args.model_dir is not None:
-        model.fcn_st.load_state_dict(torch.load(args.model_dir))
+        model.load_state_dict(torch.load(args.model_dir))
+
+    if args.pretrained_model_dir is not None:
+        model.fcn_st.load_state_dict(torch.load(args.pretrained_model_dir))
 
     if torch.cuda.is_available():
         model = model.to(device)         # move model to GPU memory
@@ -130,7 +133,7 @@ def train(args):
             t_loss_ss = loss_ss(outputs_ss, labels)
             t_loss_dp = loss_dp(outputs_dp, depth)
             
-            total_loss = (1/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
+            total_loss = (2*max_loss_1*max_loss_2/((max_loss_1/t_loss_ss) + (max_loss_2/t_loss_dp)))
             # Retrieve loss
             valid_loss += total_loss.item()
 
@@ -170,6 +173,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--log_dir')
     parser.add_argument('--model_dir')
+    parser.add_argument('--pretrained_model_dir')
     # Put custom arguments here
 
     args = parser.parse_args()

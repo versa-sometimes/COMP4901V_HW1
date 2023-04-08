@@ -47,6 +47,9 @@ def train(args):
     Hint: Use dense_transforms for data augmentation. If you found a good data augmentation parameters for the CNN, use them here too.
     Hint: Use the log function below to debug and visualize your model
     """
+    if args.model_dir is not None:
+        model.load_state_dict(torch.load(args.model_dir))
+
     if torch.cuda.is_available():
         model = model.to(device)         # move model to GPU memory
 
@@ -153,6 +156,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--log_dir')
+    parser.add_argument('--model_dir')
     # Put custom arguments here
 
     args = parser.parse_args()
