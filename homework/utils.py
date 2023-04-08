@@ -29,7 +29,7 @@ class VehicleClassificationDataset(Dataset):
         self.transform  = transform
         for path in glob(dataset_path+'/*'):
             for img in glob(path+'/*'):
-                self.data.append(Image.open(img))
+                self.data.append(img)
                 if path[-3:] == "cle":
                     self.label.append(0)
                 elif path[-3:] == "Car":
@@ -52,7 +52,7 @@ class VehicleClassificationDataset(Dataset):
         Hint: generate samples for training
         Hint: return image, and its image-level class label
         """
-        return self.transform(self.data[idx]), self.label[idx]
+        return self.transform(Image.open(self.data[idx])), self.label[idx]
 
 
 class DenseCityscapesDataset(Dataset):
