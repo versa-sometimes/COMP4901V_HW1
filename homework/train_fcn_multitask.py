@@ -48,7 +48,7 @@ def train(args):
     Hint: Use the log function below to debug and visualize your model
     """
     if args.model_dir is not None:
-        model.fcn_st.load_state_dict(args.model_dir)
+        model.fcn_st.load_state_dict(torch.load(args.model_dir))
 
     if torch.cuda.is_available():
         model = model.to(device)         # move model to GPU memory
