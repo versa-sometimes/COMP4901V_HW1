@@ -20,13 +20,11 @@ def train(args):
     train_tf = dense_transforms.Compose3([
             # dense_transforms.RandomHorizontalFlip(),
             # dense_transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.4, hue=0.1),
-            dense_transforms.ToTensor3(),
-            dense_transforms.Normalize3(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+            dense_transforms.ToTensor3()
         ])
     
     valid_tf = dense_transforms.Compose3([
-            dense_transforms.ToTensor3(),
-            dense_transforms.Normalize3(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+            dense_transforms.ToTensor3()
         ])
 
     weights = torch.tensor([3.29, 21.9, 4.68, 121.32, 266.84, 117.6, 1022.23, 205.68, 6.13, 118.81, 35.17, 168.36, 460.62, 15.53, 272.62, 501.94, 3536.12, 2287.91, 140.32])
@@ -49,6 +47,9 @@ def train(args):
     Hint: Use dense_transforms for data augmentation. If you found a good data augmentation parameters for the CNN, use them here too.
     Hint: Use the log function below to debug and visualize your model
     """
+    if args.st_dir is not None:
+        model.fcn_st.load_state_dict(args.model_dir)
+
     if torch.cuda.is_available():
         model = model.to(device)         # move model to GPU memory
 
@@ -58,6 +59,8 @@ def train(args):
     best_vloss = 100000
 
     for epoch in range(100):
+
+        log_flag = False
         print("Epoch {}".format(epoch))
         model.train()
         # print("Here")
@@ -77,6 +80,12 @@ def train(args):
             # if torch.cuda.is_available():
             #     outputs = outputs.to(device)
 
+
+            if (epoch+1) % 5 == 0:
+                if not log_flag:
+                    log(train_logger, inputs, labels, outputs_ss, epoch)
+                    log_flag=True
+
             # calculate loss and grads
             # print(weights.is_cuda)
             outputs_ss = outputs_ss.softmax(1)
@@ -89,11 +98,10 @@ def train(args):
             optimizer.step()
             # Retrieve loss
             val += total_loss.item()
-            # print(t_loss.item())
-            train_logger.add_scalar('train', total_loss.item(), i + N * epoch)
-            train_logger.flush()
 
         val /= len(train_data)
+        train_logger.add_scalar('train', val, epoch)
+        train_logger.flush()
         print('Epoch {}, training loss: {}'.format(epoch, val))
 
         model.eval()
@@ -106,22 +114,17 @@ def train(args):
                 inputs, labels, depth = inputs.to(device), labels.to(device), depth.to(device)
             # produce one set of outputs
             outputs_ss, outputs_dp = model(inputs)
-            # if torch.cuda.is_available():
-            #     outputs = outputs.to(device)
 
             # calculate loss and grads
-            # print(weights.is_cuda)
             outputs_ss = outputs_ss.softmax(1)
             t_loss_ss = loss_ss(outputs_ss, labels)
             t_loss_dp = loss_dp(outputs_dp, depth)
             total_loss = t_loss_ss + t_loss_dp
-
-            # Adjust weights
             # Retrieve loss
             valid_loss += total_loss.item()
 
         valid_loss /= len(valid_data)
-        valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
+        valid_logger.add_scalar('valid', valid_loss, epoch)
         valid_logger.flush()
         print('Epoch {}, validation loss: {}'.format(epoch, valid_loss))
 
@@ -131,7 +134,7 @@ def train(args):
             model_path = 'model_{}_{}'.format(timestamp, epoch)
             torch.save(model.state_dict(), model_path)
 
-    save_model(model)
+    # save_model(model)
 
 
 def log(logger, imgs, lbls, logits, global_step):
@@ -155,6 +158,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--log_dir')
+    parser.add_argument('--model_dir')
     # Put custom arguments here
 
     args = parser.parse_args()

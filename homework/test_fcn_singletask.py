@@ -98,30 +98,7 @@ def test(args):
 
     print("End")
         
-
     return train_cm.average_accuracy, valid_cm.average_accuracy, test_cm.average_accuracy
-
-# class DenseVisualization():
-#     def __init__(self, img, segmentation):
-#         self.img = img
-#         self.segmentation = segmentation
-
-#     def __visualizeitem__(self):
-#         """
-#         Your code here
-#         Hint: you can visualize your model predictions and save them into images. 
-#         """
-#         plt.figure()
-#         f, axarr = plt.subplots(3, 6)
-#         model = FCN_ST()
-#         output_ss = model(self.img)
-#         for i in range(5):
-#             for j in range(6):
-#                 axarr[j].imshow(self.img[j])
-#             for j in range(6,12):
-#                 axarr[j].imshow(dense_transforms.label_to_pil_image(output_ss[j])) 
-#             for j in range(12,18):
-#                 axarr[j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j])) 
 
 if __name__ == '__main__':
     import argparse
@@ -134,5 +111,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     test(args)
-    # dv = DenseVisualization()
-    # dv.

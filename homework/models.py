@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.models import resnet50
+from .dense_transforms import Normalize3
 
 class CNNClassifier(torch.nn.Module):
     def __init__(self):
@@ -411,15 +412,10 @@ class FCN_MT(torch.nn.Module):
         Hint: Use residual connections
         Hint: Always pad by kernel_size / 2, use an odd kernel_size
         """
-        self.resnet = resnet50(pretrained=True)
-
-        self.relu = nn.ReLU()
-
-        self.ss_head = ST_Head()
-
-        # self.conv1x1 = nn.Conv2d(in_channels=2048, out_channels=512, kernel_size=(1,1), stride=1)
+        self.fcn_st = FCN_ST()
         
         self.dp_head = DP_Head()
+        self.norm = Normalize3(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 
     def forward(self, x):
         """
@@ -432,25 +428,26 @@ class FCN_MT(torch.nn.Module):
               if required (use z = z[:, :, :H, :W], where H and W are the height and width of a corresponding strided
               convolution
         """
-        x = self.resnet.conv1(x)
-        x = self.resnet.bn1(x)
-        x = self.relu(x)
+        x = self.norm(x)
+        x = self.fcn_st.resnet.conv1(x)
+        x = self.fcn_st.resnet.bn1(x)
+        x = self.fcn_st.relu(x)
 
         x_skip4 = x.clone()
 
-        x = self.resnet.maxpool(x)
-        x = self.resnet.layer1(x)
+        x = self.fcn_st.resnet.maxpool(x)
+        x = self.fcn_st.resnet.layer1(x)
         x_skip3 = x.clone()
 
-        x = self.resnet.layer2(x)
+        x = self.fcn_st.resnet.layer2(x)
         x_skip2 = x.clone()
 
-        x = self.resnet.layer3(x)
+        x = self.fcn_st.resnet.layer3(x)
         x_skip1 = x.clone()
 
-        x = self.resnet.layer4(x)
+        x = self.fcn_st.resnet.layer4(x)
 
-        sm_pred = self.ss_head(x, x_skip4, x_skip3, x_skip2, x_skip1)
+        sm_pred = self.fcn_st.sm_head(x, x_skip4, x_skip3, x_skip2, x_skip1)
         dp_pred = self.dp_head(x, x_skip4, x_skip3, x_skip2, x_skip1)
 
         return sm_pred, dp_pred
@@ -481,25 +478,11 @@ class SoftmaxCrossEntropyLoss(nn.Module):
 
             return loglik
 
-
-    
-# class MultiTaskLoss(nn.Module):
-#     def __init__(self, weight):
-#         super(MultiTaskLoss, self).__init__()
-#         self.CELoss = nn.CrossEntropyLoss(weight, ignore_index=255)
-#         self.L1Loss = nn.L1Loss()
-
-#     def forward(self, outputs_ss, labels, outputs_dp, depth):
-#         ce_loss = self.CELoss(outputs_ss, labels)
-#         dp_loss = self.L1Loss(outputs_dp, depth)
-#         return ce_loss*0.5 + dp_loss*0.5
-
 model_factory = {
     'cnn': CNNClassifier,
     'fcn_st': FCN_ST,
     'fcn_mt': FCN_MT
 }
-
 
 def save_model(model):
     from torch import save
