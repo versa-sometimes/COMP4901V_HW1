@@ -132,6 +132,8 @@ class DenseVisualization():
             axarr[3, j].imshow(dense_transforms.label_to_pil_image(output_ss[j].detach())) 
             axarr[4, j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j].detach())) 
 
+        f.show()
+
 def load_data(dataset_path, num_workers=0, batch_size=128, **kwargs):
     dataset = VehicleClassificationDataset(dataset_path, **kwargs)
     return DataLoader(dataset, num_workers=num_workers, batch_size=batch_size, shuffle=True, drop_last=True)
