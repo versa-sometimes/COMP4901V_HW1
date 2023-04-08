@@ -57,7 +57,8 @@ def train(args):
 
     for epoch in range(100):
 
-        # train_cm = ConfusionMatrix(19)
+        train_cm = ConfusionMatrix(19)
+        log_flag = False
         print("Epoch {}".format(epoch))
         model.train()
         # print("Here")
@@ -74,14 +75,13 @@ def train(args):
 
             # produce one set of outputs
             outputs = model(inputs)
-            # if torch.cuda.is_available():
-            #     outputs = outputs.to(device)
 
-            # calculate loss and grads
-            # print(weights.is_cuda)
-            # if (epoch+1) % 5 == 0:
-            #     sols = outputs.max(1)[1]
-            #     train_cm.add(sols, labels)
+            if (epoch+1) % 5 == 0:
+                sols = outputs.max(1)[1]
+                train_cm.add(sols, labels)
+                if not log_flag:
+                    log(train_logger, inputs[0], labels[0], outputs[0], epoch)
+                    log_flag=True
                 
             t_loss = loss(outputs, labels)
             t_loss.backward()
@@ -90,19 +90,16 @@ def train(args):
             optimizer.step()
             # Retrieve loss
             val += t_loss.item()
-            # print(t_loss.item())
-            train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
-            train_logger.flush()
 
         
-        # if (epoch+1) % 5 == 0:
-        #     print(train_cm.global_accuracy)
-        #     print(train_cm.class_accuracy)
-        #     print(train_cm.average_accuracy)
-        #     print(train_cm.iou)
-        #     print(train_cm.class_iou)
+        if (epoch+1) % 5 == 0:
+            print(train_cm.class_accuracy)
+            print(train_cm.average_accuracy)
+            print(train_cm.class_iou)
 
         val /= len(train_data)
+        train_logger.add_scalar('train', val, epoch)
+        train_logger.flush()
         print('Epoch {}, training loss: {}'.format(epoch, val))
 
         model.eval()
@@ -120,10 +117,9 @@ def train(args):
             t_loss = loss(outputs, labels)
             # Retrieve loss
             valid_loss += t_loss.item()
-            # print(t_loss.item())
 
         valid_loss /= len(valid_data)
-        valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
+        valid_logger.add_scalar('valid', valid_loss, epoch)
         valid_logger.flush()
         print('Epoch {}, validation loss: {}'.format(epoch, valid_loss))
 
