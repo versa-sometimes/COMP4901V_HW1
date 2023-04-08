@@ -88,6 +88,7 @@ def train(args):
 
             t_loss = loss(outputs, labels)
 
+            print(t_loss.item())   
             valid_loss += t_loss.item()
 
         valid_loss /= len(valid_data)
