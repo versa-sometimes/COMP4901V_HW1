@@ -68,11 +68,11 @@ def train(args):
             t_loss.backward()
 
             optimizer.step()
-
+            print(t_loss.item())
             val += t_loss.item()
 
         val /= len(train_data)
-        train_logger.add_scalar('train', t_loss.item(),epoch)
+        train_logger.add_scalar('train', val, epoch)
         train_logger.flush()
         print('Epoch {}, training loss: {}'.format(epoch, val))
 
