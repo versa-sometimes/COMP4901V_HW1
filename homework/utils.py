@@ -126,7 +126,7 @@ class DenseVisualization():
         output_ss, output_dp = model(self.img)
         for i in range(5):
             for j in range(6):
-                axarr[i, j].imshow(self.img[j].transpose((1,2,0)))
+                axarr[i, j].imshow(self.img[j].permute((1,2,0)))
             for j in range(6,12):
                 axarr[i, j].imshow(output_dp[j], cmap="plasma") 
             for j in range(12,18):
