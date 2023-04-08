@@ -126,15 +126,15 @@ class DenseVisualization():
         output_ss, output_dp = model(self.img)
         for i in range(5):
             for j in range(6):
-                axarr[j].imshow(self.img[j])
+                axarr[i, j].imshow(self.img[j])
             for j in range(6,12):
-                axarr[j].imshow(output_dp[j], cmap="plasma") 
+                axarr[i, j].imshow(output_dp[j], cmap="plasma") 
             for j in range(12,18):
-                axarr[j].imshow(self.depth[j], cmap="plasma") 
+                axarr[i, j].imshow(self.depth[j], cmap="plasma") 
             for j in range(18,24):
-                axarr[j].imshow(dense_transforms.label_to_pil_image(output_ss[j])) 
+                axarr[i, j].imshow(dense_transforms.label_to_pil_image(output_ss[j])) 
             for j in range(24,30):
-                axarr[j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j])) 
+                axarr[i, j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j])) 
 
 def load_data(dataset_path, num_workers=0, batch_size=128, **kwargs):
     dataset = VehicleClassificationDataset(dataset_path, **kwargs)
