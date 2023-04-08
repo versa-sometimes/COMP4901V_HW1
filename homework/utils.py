@@ -223,7 +223,7 @@ class DepthError(object):
         # print(np.min((np.abs(np.array(self.gt) - np.array(self.pred)))))
         # print(np.min((np.array(self.gt))))
 
-        abs_rel = np.mean((np.abs(self.gt.mean() - self.pred.mean()) / (self.gt.mean() + 1e-5)))
+        abs_rel = ((np.abs(self.gt.mean() - self.pred.mean())) / (self.gt.mean() + 1e-5))
 
         # sq_rel = np.mean(((self.gt - self.pred) ** 2) / self.gt)
 
