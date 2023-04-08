@@ -60,7 +60,6 @@ def train(args):
             inputs, labels = data
             if torch.cuda.is_available():
                 inputs, labels = inputs.to(device), labels.to(device)
-            print("BG", i)
             optimizer.zero_grad()
 
             outputs = model(inputs)
@@ -73,7 +72,7 @@ def train(args):
             val += t_loss.item()
 
         val /= len(train_data)
-        train_logger.add_scalar('train', t_loss.item(), i + N * epoch)
+        train_logger.add_scalar('train', t_loss.item(),epoch)
         train_logger.flush()
         print('Epoch {}, training loss: {}'.format(epoch, val))
 
@@ -92,7 +91,7 @@ def train(args):
             valid_loss += t_loss.item()
 
         valid_loss /= len(valid_data)
-        valid_logger.add_scalar('valid', valid_loss, i + len(train_data) * epoch)
+        valid_logger.add_scalar('valid', valid_loss, epoch)
         valid_logger.flush()
         print('Epoch {}, validation loss: {}'.format(epoch, valid_loss))
 
