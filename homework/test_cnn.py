@@ -2,6 +2,7 @@ from .models import CNNClassifier
 from .utils import ConfusionMatrix, load_data
 import torch
 import torchvision
+import torchvision.transforms as transforms
 import torch.utils.tensorboard as tb
 
 
@@ -11,8 +12,15 @@ def test(args):
     model.eval()
     batch_size = 64
     model.load_state_dict(torch.load(args.log_dir, torch.device('cpu')))
-    train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size)
-    valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size)
+
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+    ])
+
+    train_data = load_data('drive-download-20230329T090612Z-001/train_subset', 2, batch_size, transforms=transform)
+    valid_data = load_data('drive-download-20230329T090612Z-001/validation_subset', 2, batch_size, transforms=transform)
 
     if torch.cuda.is_available():
         device = torch.device("cuda")    # select GPU device

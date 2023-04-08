@@ -462,16 +462,19 @@ class SoftmaxCrossEntropyLoss(nn.Module):
             for i, val in enumerate(targets):
                 loglik[i] = outputs[i,val]
 
+            if self.size_average:
+                return loglik.mean()
+            else:
+                return loglik.sum()
+
         else:
             CEloss = nn.CrossEntropyLoss(torch.tensor(self.weight), ignore_index=255, size_average=self.size_average)
             outputs = torch.softmax(inputs, 1)
             loglik = CEloss(inputs, targets)
 
+            return loglik
 
-        if self.size_average:
-            return loglik.mean()
-        else:
-            return loglik.sum()
+
     
 # class MultiTaskLoss(nn.Module):
 #     def __init__(self, weight):
