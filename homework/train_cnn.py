@@ -11,7 +11,7 @@ def train(args):
     from os import path
     model = CNNClassifier()
     train_logger, valid_logger = None, None
-    batch_size = 64
+    # batch_size = 64
 
     if args.log_dir is not None:
         train_logger = tb.SummaryWriter(path.join(args.log_dir, 'train'), flush_secs=1)
