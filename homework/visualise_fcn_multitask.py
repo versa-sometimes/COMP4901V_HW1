@@ -7,5 +7,6 @@ inputs, labels, depth = list(test_data_vis)[0]
 
 import matplotlib.pyplot as plt
 import numpy as np
+plt.close('all')
 plt.imshow(np.random.rand(5,5,3))
 plt.show()
