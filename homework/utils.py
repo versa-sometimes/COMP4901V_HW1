@@ -124,6 +124,7 @@ class DenseVisualization():
         f, axarr = plt.subplots(5, 6)
         model = FCN_MT()
         output_ss, output_dp = model(self.img)
+        output_ss = output_ss.argmax(1)
         for j in range(6):
             axarr[0, j].imshow(self.img[j].permute((1,2,0)))
             axarr[1, j].imshow(output_dp[j].detach().reshape(output_dp[j].shape[1:]), cmap="plasma") 
