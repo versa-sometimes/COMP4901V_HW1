@@ -126,8 +126,8 @@ class DenseVisualization():
         output_ss, output_dp = model(self.img)
         for j in range(6):
             axarr[0, j].imshow(self.img[j].permute((1,2,0)))
-            axarr[1, j].imshow(output_dp[j].detach(), cmap="plasma") 
-            axarr[2, j].imshow(self.depth[j].detach(), cmap="plasma") 
+            axarr[1, j].imshow(output_dp[j].detach().reshape(output_dp[j].shape[1:]), cmap="plasma") 
+            axarr[2, j].imshow(self.depth[j].detach().reshape(output_dp[j].shape[1:]), cmap="plasma") 
             axarr[3, j].imshow(dense_transforms.label_to_pil_image(output_ss[j].detach())) 
             axarr[4, j].imshow(dense_transforms.label_to_pil_image(self.segmentation[j].detach())) 
 
