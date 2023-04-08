@@ -71,7 +71,6 @@ def train(args):
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5)
 
             optimizer.step()
-            print(t_loss.item())
             val += t_loss.item()
 
         val /= len(train_data)
@@ -90,8 +89,6 @@ def train(args):
             outputs = model(inputs)
 
             t_loss = loss(outputs, labels)
-
-            print(t_loss.item())   
             valid_loss += t_loss.item()
 
         valid_loss /= len(valid_data)
