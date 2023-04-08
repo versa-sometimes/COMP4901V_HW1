@@ -120,11 +120,11 @@ if __name__ == '__main__':
     parser.add_argument('--log_dir')
     # Put custom arguments here
 
-    from os import path
+    # from os import path
     args = parser.parse_args()
-    train_logger = tb.SummaryWriter(path.join(args.log_dir, 'train'), flush_secs=1)
-    i = 0
-    while True:
-        i += 1 
-        train_logger.add_scalar('y=2x', i * 2, i)
-    # train(args)
+    # train_logger = tb.SummaryWriter(path.join(args.log_dir, 'train'), flush_secs=1)
+    # i = 0
+    # while True:
+    #     i += 1 
+    #     train_logger.add_scalar('y=2x', i * 2, i)
+    train(args)
