@@ -47,7 +47,7 @@ def train(args):
     Hint: Use dense_transforms for data augmentation. If you found a good data augmentation parameters for the CNN, use them here too.
     Hint: Use the log function below to debug and visualize your model
     """
-    if args.st_dir is not None:
+    if args.model_dir is not None:
         model.fcn_st.load_state_dict(args.model_dir)
 
     if torch.cuda.is_available():
