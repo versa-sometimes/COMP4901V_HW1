@@ -47,7 +47,7 @@ def train(args):
         model = model.to(device)         # move model to GPU memory
 
     print("All data loaded.")
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=0.0001)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
     N = len(train_data)
     best_vloss = 100000
 
