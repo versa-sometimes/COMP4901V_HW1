@@ -161,3 +161,6 @@ if __name__ == '__main__':
     inputs, labels, depth = list(test_data_vis)[0]
 
     DenseVisualization(inputs, depth, labels).__visualizeitem__()
+    import matplotlib.pyplot as plt
+    plt.imshow(np.random.rand(5,5,3))
+    plt.show()
