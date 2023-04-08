@@ -213,9 +213,9 @@ class DepthError(object):
         """Computation of error metrics between predicted and ground truth depths
         """
         thresh = np.maximum((self.gt / self.pred), (self.pred / self.gt))
-        a1 = (thresh < 1.25     ).mean()
-        a2 = (thresh < 1.25 ** 2).mean()
-        a3 = (thresh < 1.25 ** 3).mean()
+        a1 = (thresh < 1.25     ).astype(np.float64).mean()
+        a2 = (thresh < 1.25 ** 2).astype(np.float64).mean()
+        a3 = (thresh < 1.25 ** 3).astype(np.float64).mean()
 
         # rmse = (self.gt - self.pred) ** 2
         # rmse = np.sqrt(rmse.mean())
