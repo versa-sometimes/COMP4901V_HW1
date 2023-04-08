@@ -220,6 +220,8 @@ class DepthError(object):
 
         # rmse_log = (np.log(self.gt) - np.log(self.pred)) ** 2
         # rmse_log = np.sqrt(rmse_log.mean())
+        # print(np.min((np.abs(np.array(self.gt) - np.array(self.pred)))))
+        # print(np.min((np.array(self.gt))))
 
         abs_rel = np.mean((np.abs(np.array(self.gt) - np.array(self.pred)) / (np.array(self.gt))))
 
